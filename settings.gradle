@@ -1,0 +1,5 @@
+include ':app:library'
+include ':binding-annotations'
+include ':app'
+include ':binding-processor'
+rootProject.name = "CustomAnnotations-ktx"
