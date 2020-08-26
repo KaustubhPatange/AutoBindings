@@ -26,7 +26,7 @@ jobs:
       - run: set filep=${{ steps.write_file.outputs.filePath }}
       - run: call set filep=%filep:\=\\%
       - run: call set filep=%filep::=\:%
-      = run: echo %filep%
+      - run: echo %filep%
       - run: echo signing.secretKeyRingFile=%filep% >> local.properties      
       - run: type local.properties  
       - run: chmod +x gradlew
