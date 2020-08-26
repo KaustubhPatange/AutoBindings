@@ -1,5 +1,5 @@
 name: Build and Release
-on: [release]
+on: [push]
 
 jobs:
   build:
@@ -22,12 +22,7 @@ jobs:
           fileName: 'key.gpg'
           encodedString: ${{ secrets.SIGNING_KEY_GPG }}
       - run: echo ${{ steps.write_file.outputs.filePath }}
-      - run: setlocal enabledelayedexpansion
-      - run: set filep=${{ steps.write_file.outputs.filePath }}
-      - run: call set filep=%filep:\=\\%
-      - run: call set filep=%filep::=\:%
-      - run: echo %filep%
-      - run: echo signing.secretKeyRingFile=%filep% >> local.properties      
+      - run: echo signing.secretKeyRingFile=D\:\\a\\_temp\\key.gpg >> local.properties      
       - run: type local.properties  
       - run: chmod +x gradlew
       - name: Stage annotations
