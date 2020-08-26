@@ -1,17 +1,20 @@
 package com.kpstv.processor.generators
 
+import com.kpstv.library_annotations.OnClick
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
+import javax.lang.model.element.TypeElement
 
 object ViewHolderGenerator {
     fun generateOnCreateViewHolder(
         viewHolderClassName: ClassName,
         layoutId: Int
     ): MethodSpec {
+
         return MethodSpec.methodBuilder("onCreateViewHolder")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)

@@ -49,7 +49,7 @@ class TestAdapter {
 recyclerView.adapter = BindTestAdapter(TestAdapter(), List<Data>)
 
 //Java
-recyclerView.adapter = new BindTestAdapter(new TestAdapter(), List<Data>)
+recyclerView.setAdapter(new BindTestAdapter(new TestAdapter(), List<Data>));
 ```
 
 - Notice we're passing a new instance of `TestAdapter` as parameter because we don't want to allocate objects for every instance of `BindTestAdapter` even if we are not using it.

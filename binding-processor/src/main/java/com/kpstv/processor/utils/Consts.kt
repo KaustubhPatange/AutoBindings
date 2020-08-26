@@ -38,4 +38,16 @@ object Consts {
         "android.view",
         "ViewGroup"
     )
+
+    val CLASSNAME_VIEW_ONCLICK_LISTENER = ClassName.get(
+        "android.view",
+        "View",
+        "OnClickListener"
+    )
+
+    val CLASSNAME_VIEW_ONLONGCLICK_LISTENER = ClassName.get(
+        "android.view",
+        "View",
+        "OnLongClickListener"
+    )
 }

@@ -1,9 +1,8 @@
 package com.kpstv.sample_ktx
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.library_annotations.*
@@ -19,14 +18,14 @@ class MainActivity : AppCompatActivity() {
         val models = listOf(Data("item1"), Data("item2"), Data("item3"), Data("item4"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = BindTestAdapter(TestAdapter())
+        recyclerView.adapter = BindTestAdapter(TestAdapter(), models)
     }
 }
 
 data class Data(val name: String)
 
-@RecyclerViewListAdapter(R.layout.item_layout, Data::class)
-class TestAdapter {
+@RecyclerViewAdapter(R.layout.item_layout, Data::class)
+class TestAdapter() {
 
     @DiffContentSame
     fun contentSame(oldItem: Data, newItem: Data) = false
@@ -35,12 +34,16 @@ class TestAdapter {
     fun itemSame(oldItem: Data, newItem: Data) = false
 
     @Bind
-    fun bind(view: View, item: Data, position: Int) {}
-    /*@Bind
-    fun bind(view: View, item: Data, position: Int) = with(view.context) {
+    fun bind(view: View, item: Data, position: Int) {
         view.item_title.text = item.name
-        view.item_title.setOnClickListener {
-            Toast.makeText(this, "Click position $position", Toast.LENGTH_SHORT).show()
-        }
-    }*/
+    }
+
+    @OnClick(R.id.item_title)
+    fun onClick(context: Context, item: Data, position: Int) {
+
+    }
+
+    @OnLongClick(R.id.item_title)
+    fun onLongClick(context: Context, item: Data, position: Int) {
+    }
 }
