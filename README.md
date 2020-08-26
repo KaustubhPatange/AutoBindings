@@ -12,9 +12,10 @@
 ## Download
 
 ```groovy
-implementation 'io.github.kaustubhpatange:autobindings-annotations:tag'
+implementation 'io.github.kaustubhpatange:autobindings:tag'
 
 // Kotlin
+apply plugin: 'kotlin-kapt' // at top of your module build.gradle file
 kapt 'io.github.kaustubhpatange:autobindings-compiler:tag'
 // Java
 annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
@@ -24,6 +25,8 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 
 - [Adapter Generation]()
   - [RecyclerViewAdpater](#recyclerview-adapter)
+  - [ListAdapter](#list-adapter)
+  - [Notes](#notes)
 
 ### RecyclerView Adapter
 
@@ -35,8 +38,18 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 @RecyclerViewAdapter(R.layout.recyclerview_item_layout, Data::class)
 class TestAdapter {
     @Bind
-    fun(view: View, item: Data, position: Int) {
-        // Do your bindings and onClick listener.
+    fun bind(view: View, item: Data, position: Int) {
+        // Set your views.
+    }
+
+    @OnClick(R.id.item_id)
+    fun onClick(context: Context, item: Data, position: Int) {
+        // ...
+    }
+
+    @OnLongClick(R.id.item_id)
+    fun onLongClick(context: Context, item: Data, position: Int) {
+        // ...
     }
 }
 ```
@@ -53,6 +66,43 @@ recyclerView.setAdapter(new BindTestAdapter(new TestAdapter(), List<Data>));
 ```
 
 - Notice we're passing a new instance of `TestAdapter` as parameter because we don't want to allocate objects for every instance of `BindTestAdapter` even if we are not using it.
+
+- Check [sample-ktx](sample-ktx/) project for it's usage.
+
+### List Adapter
+
+- An adapter which is typically used with `viewModel` for submitting data through `livedata`
+
+```kotlin
+@RecyclerViewListAdapter(R.layout.recyclerview_item_layout, Data::class)
+class TestAdapter {
+    @DiffItemSame
+    fun itemSame(oldItem: Data, newItem: Data): Boolean {
+        // DiffUtil.areItemsTheSame callback
+    }
+
+    @DiffContentSame
+    fun contentSame(oldItem: Data, newItem: Data): Boolean {
+        // DiffUtil.areContentsTheSame callback
+    }
+
+    @Bind
+    fun bind(view: View, item: Data, position: Int) { }
+
+    @OnClick(R.id.item_id)
+    fun onClick(context: Context, item: Data, position: Int) { }
+
+    @OnLongClick(R.id.item_id)
+    fun onLongClick(context: Context, item: Data, position: Int) { }
+}
+```
+
+- Compile the project and you'll have `BindTestAdapter` class generated (ready for use).
+- You can then use the `BindTestAdapter` class with `recyclerView`.
+
+### Notes
+
+- If you pass `setInViewHolder = false` in `@OnClick` or `@OnLongClick`, then the clicks will be generated in `onBindViewHolder` instead. This will be used if your listeners are dynamic.
 
 ## License
 

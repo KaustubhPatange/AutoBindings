@@ -6,8 +6,11 @@ object Consts {
     const val adapterPrefix = "Bind"
     const val holderSuffix = "Holder"
 
+    const val view = "view"
     const val dataSet = "dataSet"
     const val className = "className"
+    const val position = "position"
+    const val holder = "holder"
 
     val CLASSNAME_LISTADAPTER = ClassName.get(
         "androidx.recyclerview.widget",

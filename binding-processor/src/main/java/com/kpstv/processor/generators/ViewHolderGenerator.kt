@@ -1,6 +1,7 @@
 package com.kpstv.processor.generators
 
-import com.kpstv.library_annotations.OnClick
+import com.kpstv.processor.utils.BINDTYPE
+import com.kpstv.processor.utils.ClickUtils
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -11,8 +12,10 @@ import javax.lang.model.element.TypeElement
 
 object ViewHolderGenerator {
     fun generateOnCreateViewHolder(
+        typeElement: TypeElement,
         viewHolderClassName: ClassName,
-        layoutId: Int
+        layoutId: Int,
+        isListAdapter: Boolean = false
     ): MethodSpec {
 
         return MethodSpec.methodBuilder("onCreateViewHolder")
@@ -20,7 +23,9 @@ object ViewHolderGenerator {
             .addAnnotation(Override::class.java)
             .addParameter(Consts.CLASSNAME_VIEWGROUP, "parent")
             .addParameter(TypeName.INT, "viewType")
-            .addStatement("return new ${viewHolderClassName.simpleName()}(android.view.LayoutInflater.from(parent.getContext()).inflate(${layoutId}, parent, false))")
+            .addStatement("final ${viewHolderClassName.simpleName()} holder = new ${viewHolderClassName.simpleName()}(android.view.LayoutInflater.from(parent.getContext()).inflate(${layoutId}, parent, false))")
+            .also { ClickUtils.generateClickListener(it, typeElement, BINDTYPE.VIEWHOLDER, isListAdapter) }
+            .addStatement("return holder")
             .returns(viewHolderClassName)
             .build()
     }
@@ -32,8 +37,8 @@ object ViewHolderGenerator {
             .addMethod(
                 MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(Consts.CLASSNAME_VIEW, "view")
-                    .addStatement("super(view)")
+                    .addParameter(Consts.CLASSNAME_VIEW, Consts.view)
+                    .addStatement("super(${Consts.view})")
                     .build()
             ).build()
     }

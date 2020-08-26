@@ -33,15 +33,12 @@ class BindingProcessor : AbstractProcessor() {
         annotations: MutableSet<out TypeElement>?,
         env: RoundEnvironment?
     ): Boolean {
-        parseRecyclerViewAnnotation(annotations, env)
-        parseRecyclerViewListAnnotation(annotations, env)
+        parseRecyclerViewAnnotation(env)
+        parseRecyclerViewListAnnotation(env)
         return true
     }
 
-    private fun parseRecyclerViewListAnnotation(
-        annotations: MutableSet<out TypeElement>?,
-        env: RoundEnvironment?
-    ) {
+    private fun parseRecyclerViewListAnnotation(env: RoundEnvironment?) {
         val recyclerViewListAnnotations =
             env?.getElementsAnnotatedWith(RecyclerViewListAdapter::class.java)
         val types = ElementFilter.typesIn(recyclerViewListAnnotations).toMutableList()
@@ -85,17 +82,14 @@ class BindingProcessor : AbstractProcessor() {
                         .addStatement("this.${Consts.className} = ${Consts.className}")
                         .build()
                 )
-                .addMethod(ViewHolderGenerator.generateOnCreateViewHolder(viewHolderClassName, layoutId))
+                .addMethod(ViewHolderGenerator.generateOnCreateViewHolder(typeElement, viewHolderClassName, layoutId, true))
                 .addMethod(BindViewGenerator.generateOnBindViewListHolder(typeElement, viewHolderClassName))
 
             Utils.write(packageName, adapterBuilder.build(), typeElement, processingEnv)
         }
     }
 
-    private fun parseRecyclerViewAnnotation(
-        annotations: MutableSet<out TypeElement>?,
-        env: RoundEnvironment?
-    ) {
+    private fun parseRecyclerViewAnnotation(env: RoundEnvironment?) {
         val recyclerViewAnnotations = env?.getElementsAnnotatedWith(RecyclerViewAdapter::class.java)
         val types = ElementFilter.typesIn(recyclerViewAnnotations).toMutableList()
         types.forEach { typeElement ->
@@ -144,6 +138,7 @@ class BindingProcessor : AbstractProcessor() {
                 )
                 .addMethod(
                     ViewHolderGenerator.generateOnCreateViewHolder(
+                        typeElement,
                         viewHolderClassName,
                         layoutId
                     )
