@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+/key.asc
+*.gpg
+publish-aar.gradle
+publish-jar.gradle

@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -11,3 +12,11 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
+    PUBLISH_ARTIFACT_ID = 'autobindings-compiler'
+    PUBLISH_VERSION = versions.library
+}
+
+apply from: rootProject.file('publish-jar.gradle')
