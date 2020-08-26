@@ -9,8 +9,7 @@ import com.squareup.javapoet.TypeName
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 
-object BindViewGenerator
-{
+object BindViewGenerator {
     fun generateOnBindViewHolder(
         typeElement: TypeElement,
         viewHolderClassName: ClassName
@@ -27,4 +26,19 @@ object BindViewGenerator
             .build()
     }
 
+    fun generateOnBindViewListHolder(
+        typeElement: TypeElement,
+        viewHolderClassName: ClassName
+    ): MethodSpec {
+
+        val bindMethod = typeElement.getElementFromAnnotation<Bind>()
+
+        return MethodSpec.methodBuilder("onBindViewHolder")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override::class.java)
+            .addStatement("${Consts.className}.${bindMethod?.simpleName}(holder.itemView, getItem(position), position)")
+            .addParameter(viewHolderClassName, "holder")
+            .addParameter(TypeName.INT, "position")
+            .build()
+    }
 }

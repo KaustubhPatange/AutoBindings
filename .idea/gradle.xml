@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/app/library" />
             <option value="$PROJECT_DIR$/binding-annotations" />
             <option value="$PROJECT_DIR$/binding-processor" />
+            <option value="$PROJECT_DIR$/sample-ktx" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

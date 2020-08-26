@@ -9,6 +9,15 @@ object Consts {
     const val dataSet = "dataSet"
     const val className = "className"
 
+    val CLASSNAME_LISTADAPTER = ClassName.get(
+        "androidx.recyclerview.widget",
+        "ListAdapter"
+    )
+    val CLASSNAME_DIFFUTIL = ClassName.get(
+        "androidx.recyclerview.widget",
+        "DiffUtil",
+        "ItemCallback"
+    )
     val CLASSNAME_RECYCLERVIEW = ClassName.get(
         "androidx.recyclerview.widget",
         "RecyclerView"
