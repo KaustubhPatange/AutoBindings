@@ -19,20 +19,14 @@ class MainActivity : AppCompatActivity() {
         val models = listOf(Data("item1"), Data("item2"), Data("item3"), Data("item4"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-      //  recyclerView.adapter = BindTestAdapter(TestAdapter(), models)
+        recyclerView.adapter = BindTestAdapter(TestAdapter(), models)
     }
 }
 
 data class Data(val name: String)
 
-@RecyclerViewListAdapter(R.layout.item_layout, Data::class)
+@RecyclerViewAdapter(R.layout.item_layout, Data::class)
 class TestAdapter {
-
-    @DiffItemSame
-    fun itemSame(oldItem: Data, newItem: Data) = oldItem.name == newItem.name
-
-    @DiffContentSame
-    fun contentSame(oldItem: Data, newItem: Data) = oldItem == newItem
 
     @Bind
     fun bind(view: View, item: Data, position: Int) {
