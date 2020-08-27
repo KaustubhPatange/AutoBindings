@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = DemoAdapter(TestAdapter()).apply { submitList(models) }
+        recyclerView.adapter = BindTestAdapter(TestAdapter()).apply { submitList(models) }
     }
 }
 
