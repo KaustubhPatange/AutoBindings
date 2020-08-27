@@ -5,9 +5,7 @@
 
 **AutoBindings** is a set of annotations which will make Android development easier by eliminating boilerplate codes.
 
-> _Currently it only supports recyclerView adapter generation._
-
-> _The library is still in alpha (not recommend for production). Although you can try it out. I'll be adding more features soon._
+> _Currently auto-generate RecyclerView adapters._
 
 ## Features
 
@@ -15,6 +13,7 @@
 - [x] Support for `OnClick` & `OnLongClick` methods.
 - [x] Supports `DiffUtil.ItemCallback` generation method.
 - [x] Support to load images through `Glide`.
+- [x] Support for multiple view types, check [sample-ktx](sample-ktx/).
 - [ ] More?
 
 ## Download
@@ -43,26 +42,34 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 - A basic adapter consiting of a `dataSet` & are updated through `adapter.notify*` methods, usually used for normal purpose.
 
 ```kotlin
-@RecyclerViewAdapter(R.layout.recyclerview_item_layout, Data::class)
+@RecyclerViewAdapter(Data::class)
 class TestAdapter {
 
     @GlideLoadArray(
         GlideLoad(R.id.image_id, "parameter-name", ...)
     )
-    @OnBind
-    fun bind(view: View, item: Data, position: Int) {
-        // Set your views.
+    @OnBind(R.layout.item_layout_first)
+    fun bind1(view: View, item: Data, position: Int) {
+        // Set your views for first layout.
     }
 
-    @OnClick(R.id.item_id)
+     @OnBind(R.layout.item_layout_second, viewType = 2)
+    fun bind2(view: View, item: Data, position: Int) {
+        // Set your views for second layout.
+    }
+
+    @OnClick(R.id.item_id, viewType = 2)
     fun onClick(context: Context, item: Data, position: Int) {
-        // ...
+        // OnClick for only second layout.
     }
 
     @OnLongClick(R.id.item_id)
     fun onLongClick(context: Context, item: Data, position: Int) {
-        // ...
+        // OnClick for only first layout.
     }
+
+    @ItemViewType
+    fun viewType(position: Int): Int = 0
 }
 ```
 
@@ -81,11 +88,12 @@ recyclerView.setAdapter(new BindTestAdapter(new TestAdapter(), List<Data>));
 
 ### List Adapter
 
-- An adapter which is typically used with `viewModel` for submitting data through `livedata`
+- A modern way of writing adapter supporting `diffutil` callbacks.
 
 ```kotlin
-@RecyclerViewListAdapter(R.layout.recyclerview_item_layout, Data::class)
+@RecyclerViewListAdapter(Data::class)
 class TestAdapter {
+
     @DiffItemSame
     fun itemSame(oldItem: Data, newItem: Data): Boolean {
         // DiffUtil.areItemsTheSame callback
@@ -96,14 +104,7 @@ class TestAdapter {
         // DiffUtil.areContentsTheSame callback
     }
 
-    @OnBind
-    fun bind(view: View, item: Data, position: Int) { }
-
-    @OnClick(R.id.item_id)
-    fun onClick(context: Context, item: Data, position: Int) { }
-
-    @OnLongClick(R.id.item_id)
-    fun onLongClick(context: Context, item: Data, position: Int) { }
+    ...
 }
 ```
 
@@ -113,6 +114,7 @@ class TestAdapter {
 ### Notes
 
 - If you pass `setInViewHolder = false` in `@OnClick` or `@OnLongClick`, then the clicks will be generated in `onBindViewHolder` instead. This will be used if your listeners are dynamic.
+- You can set click listener for specific `viewType`, default is first `OnBind()`.
 
 ## License
 
