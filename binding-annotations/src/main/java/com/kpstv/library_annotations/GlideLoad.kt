@@ -3,10 +3,29 @@ package com.kpstv.library_annotations
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 
+/**
+ * Annotate [OnBind] method with this to automatically load image from the url.
+ *
+ * Code example (Kotlin)
+ * ```
+ * @GlideLoadArray(
+ *   GlideLoad(R.id.item_big_image, "parameter-name",...)
+ *   ...
+ * )
+ * @OnBind(...)
+ * fun bind(...): Unit
+ * ```
+ *
+ * @see [GlideLoad.data]
+ */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class GlideLoadArray(vararg val glideLoad: GlideLoad)
 
+
+/**
+ * @see [GlideLoadArray]
+ */
 @Target(AnnotationTarget.EXPRESSION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class GlideLoad(

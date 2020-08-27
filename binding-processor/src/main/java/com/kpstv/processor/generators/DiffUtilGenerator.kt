@@ -14,8 +14,8 @@ import javax.lang.model.element.TypeElement
 object DiffUtilGenerator {
     fun generateDiffUtil(typeElement: TypeElement, dataClassTypeName: TypeName): TypeSpec {
 
-          val diffItemSame = typeElement.getElementFromAnnotation<DiffItemSame>()
-          val diffContentSame = typeElement.getElementFromAnnotation<DiffContentSame>()
+        val diffItemSame = typeElement.getElementFromAnnotation<DiffItemSame>()
+        val diffContentSame = typeElement.getElementFromAnnotation<DiffContentSame>()
 
         return TypeSpec.anonymousClassBuilder("")
             .addSuperinterface(
@@ -29,7 +29,8 @@ object DiffUtilGenerator {
                     .addParameter(dataClassTypeName, "oldItem")
                     .addParameter(dataClassTypeName, "newItem")
                     .addStatement("return ${Consts.className}.${diffItemSame?.simpleName}(oldItem, newItem)")
-                    .build())
+                    .build()
+            )
             .addMethod(
                 MethodSpec.methodBuilder("areContentsTheSame")
                     .returns(TypeName.BOOLEAN)
@@ -38,7 +39,8 @@ object DiffUtilGenerator {
                     .addParameter(dataClassTypeName, "oldItem")
                     .addParameter(dataClassTypeName, "newItem")
                     .addStatement("return ${Consts.className}.${diffContentSame?.simpleName}(oldItem, newItem)")
-                    .build())
+                    .build()
+            )
             .build()
     }
 }

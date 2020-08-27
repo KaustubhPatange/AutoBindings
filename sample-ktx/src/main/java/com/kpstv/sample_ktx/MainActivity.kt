@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.library_annotations.*
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_layout.view.*
+import kotlinx.android.synthetic.main.item_small_layout.view.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val models = listOf(
+            Data(createRandomImageUrl()),
+            Data(createRandomImageUrl()),
             Data(createRandomImageUrl()),
             Data(createRandomImageUrl()),
             Data(createRandomImageUrl()),
@@ -37,29 +39,43 @@ data class Data(val name: String, val visible: Boolean = true)
 /**
  * An example of using RecyclerView's modern ListAdapter
  */
-@RecyclerViewListAdapter(R.layout.item_layout, Data::class)
+@RecyclerViewListAdapter(Data::class)
 class TestAdapter {
 
     @DiffContentSame
     fun diffContentSame(oldItem: Data, newItemSame: Data) = oldItem == newItemSame
 
     @DiffItemSame
-    fun diffItemSame(oldItem: Data, newItemSame: Data) = oldItem.name == oldItem.name
+    fun diffItemSame(oldItem: Data, newItemSame: Data) = oldItem.name == newItemSame.name
 
     @GlideLoadArray(
-        GlideLoad(R.id.imageView, "name", transformationType = ImageTransformationType.CIRCLE_CROP)
+        GlideLoad(R.id.item_small_image, "name", transformationType = ImageTransformationType.CIRCLE_CROP)
     )
-    @OnBind
+    @OnBind(R.layout.item_small_layout)
     fun bind(view: View, item: Data, position: Int) {
         view.item_title.text = item.name
     }
 
+    @GlideLoadArray(
+        GlideLoad(R.id.item_big_image, "name", transformationType = ImageTransformationType.CENTER_CROP)
+    )
+    @OnBind(R.layout.item_big_layout, 2)
+    fun bind2(view: View, item: Data, position: Int) {
+        // blank af
+    }
+
+    /** Alternate layout swaps logic */
+    @ItemViewType
+    fun viewType(position: Int): Int = position % 2 * 2
+
+    /** Single click is enabled for small layout */
     @OnClick(R.id.mainLayout, false)
     fun onClick(context: Context, item: Data, position: Int) = with(context) {
         Toast.makeText(this, "Click, Position: $position", Toast.LENGTH_SHORT).show()
     }
 
-    @OnLongClick(R.id.mainLayout)
+    /**  Long click is enabled for big layout */
+    @OnLongClick(R.id.mainLayout, viewType = 2)
     fun onLongClick(context: Context, item: Data, position: Int) = with(context) {
         Toast.makeText(this, "LongClick, Position: $position", Toast.LENGTH_SHORT).show()
     }

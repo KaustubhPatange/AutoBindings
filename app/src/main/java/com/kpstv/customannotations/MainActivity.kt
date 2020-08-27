@@ -20,13 +20,13 @@ class MainActivity : AppCompatActivity() {
             TestClass("name1"), TestClass("name2")
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = BindDemoAdapter(DemoAdapter(), models)
+       // recyclerView.adapter = BindDemoAdapter(DemoAdapter(), models)
     }
 }
 
 data class TestClass(val name: String)
 
-@RecyclerViewAdapter(R.layout.item_test, TestClass::class)
+/*@RecyclerViewAdapter(R.layout.item_test, TestClass::class)
 class DemoAdapter {
     private val TAG = javaClass.simpleName
 
@@ -35,4 +35,4 @@ class DemoAdapter {
         Log.e(TAG, "View: $view, Title: ${item.name}, Position: $position")
         view.item_title.text = item.name
     }
-}
+}*/

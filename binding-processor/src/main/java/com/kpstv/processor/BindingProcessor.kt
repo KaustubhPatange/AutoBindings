@@ -2,10 +2,7 @@ package com.kpstv.processor
 
 import com.kpstv.library_annotations.RecyclerViewAdapter
 import com.kpstv.library_annotations.RecyclerViewListAdapter
-import com.kpstv.processor.generators.BindViewGenerator
-import com.kpstv.processor.generators.DiffUtilGenerator
-import com.kpstv.processor.generators.ItemCountGenerator
-import com.kpstv.processor.generators.ViewHolderGenerator
+import com.kpstv.processor.generators.*
 import com.kpstv.processor.utils.Consts
 import com.kpstv.processor.utils.Utils
 import com.kpstv.processor.utils.getAnnotationClassValue
@@ -28,8 +25,8 @@ import javax.lang.model.util.ElementFilter
     "com.kpstv.library_annotations.DiffContentSame",
     "com.kpstv.library_annotations.OnClick",
     "com.kpstv.library_annotations.OnLongClick",
-    "com.kpstv.library_annotations.BindVisibility",
-    "com.kpstv.library_annotations.BindVisibilityArray"
+    "com.kpstv.library_annotations.GlideLoad",
+    "com.kpstv.library_annotations.GlideLoadArray"
 )
 class BindingProcessor : AbstractProcessor() {
 
@@ -47,8 +44,6 @@ class BindingProcessor : AbstractProcessor() {
             env?.getElementsAnnotatedWith(RecyclerViewListAdapter::class.java)
         val types = ElementFilter.typesIn(recyclerViewListAnnotations).toMutableList()
         types.forEach { typeElement ->
-            val annotation = typeElement.getAnnotation(RecyclerViewListAdapter::class.java)
-            val layoutId = annotation.layoutId
             val dataTypeMirror =
                 typeElement.getAnnotationClassValue<RecyclerViewListAdapter> { dataSetType }
 
@@ -86,8 +81,8 @@ class BindingProcessor : AbstractProcessor() {
                         .addStatement("this.${Consts.className} = ${Consts.className}")
                         .build()
                 )
-                .addMethod(ViewHolderGenerator.generateOnCreateViewHolder(typeElement, viewHolderClassName, layoutId, true))
-                .addMethod(BindViewGenerator.generateOnBindViewListHolder(typeElement, viewHolderClassName))
+                .also { BindViewGenerator.generateOnBindViewListHolder(it, typeElement, viewHolderClassName) }
+                .addMethod(ViewTypeGenerator.generateItemViewType(typeElement))
 
             Utils.write(packageName, adapterBuilder.build(), typeElement, processingEnv)
         }
@@ -97,8 +92,6 @@ class BindingProcessor : AbstractProcessor() {
         val recyclerViewAnnotations = env?.getElementsAnnotatedWith(RecyclerViewAdapter::class.java)
         val types = ElementFilter.typesIn(recyclerViewAnnotations).toMutableList()
         types.forEach { typeElement ->
-            val annotation = typeElement.getAnnotation(RecyclerViewAdapter::class.java)
-            val layoutId = annotation.layoutId
             val dataTypeMirror =
                 typeElement.getAnnotationClassValue<RecyclerViewAdapter> { dataSetType }
 
@@ -140,19 +133,8 @@ class BindingProcessor : AbstractProcessor() {
                         .addModifiers(Modifier.PUBLIC)
                         .build()
                 )
-                .addMethod(
-                    ViewHolderGenerator.generateOnCreateViewHolder(
-                        typeElement,
-                        viewHolderClassName,
-                        layoutId
-                    )
-                )
-                .addMethod(
-                    BindViewGenerator.generateOnBindViewHolder(
-                        typeElement,
-                        viewHolderClassName
-                    )
-                )
+                .also { BindViewGenerator.generateOnBindViewHolder(it, typeElement, viewHolderClassName) }
+                .addMethod(ViewTypeGenerator.generateItemViewType(typeElement))
                 .addMethod(ItemCountGenerator.generateGetItemCountMethod())
 
             Utils.write(packageName, adapterBuilder.build(), typeElement, processingEnv)
