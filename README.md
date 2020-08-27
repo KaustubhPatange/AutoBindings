@@ -9,6 +9,14 @@
 
 > _The library is still in alpha (not recommend for production). Although you can try it out. I'll be adding more features soon._
 
+## Features
+
+- [x] Supports standard `RecyclerView.Adapter` & `ListAdapter` generation.
+- [x] Support for `OnClick` & `OnLongClick` methods.
+- [x] Supports `DiffUtil.ItemCallback` generation method.
+- [x] Support to load images through `Glide`.
+- [ ] More?
+
 ## Download
 
 ```groovy
@@ -25,7 +33,7 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 
 - [Adapter Generation]()
   - [RecyclerViewAdpater](#recyclerview-adapter)
-  - [ListAdapter](#list-adapter)
+  - [ListAdapter](#list-adapter) (recommended, check [sample-ktx](sample-ktx/))
   - [Notes](#notes)
 
 ### RecyclerView Adapter
@@ -37,7 +45,11 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 ```kotlin
 @RecyclerViewAdapter(R.layout.recyclerview_item_layout, Data::class)
 class TestAdapter {
-    @Bind
+
+    @GlideLoadArray(
+        GlideLoad(R.id.image_id, "parameter-name", ...)
+    )
+    @OnBind
     fun bind(view: View, item: Data, position: Int) {
         // Set your views.
     }
@@ -67,8 +79,6 @@ recyclerView.setAdapter(new BindTestAdapter(new TestAdapter(), List<Data>));
 
 - Notice we're passing a new instance of `TestAdapter` as parameter because we don't want to allocate objects for every instance of `BindTestAdapter` even if we are not using it.
 
-- Check [sample-ktx](sample-ktx/) project for it's usage.
-
 ### List Adapter
 
 - An adapter which is typically used with `viewModel` for submitting data through `livedata`
@@ -86,7 +96,7 @@ class TestAdapter {
         // DiffUtil.areContentsTheSame callback
     }
 
-    @Bind
+    @OnBind
     fun bind(view: View, item: Data, position: Int) { }
 
     @OnClick(R.id.item_id)

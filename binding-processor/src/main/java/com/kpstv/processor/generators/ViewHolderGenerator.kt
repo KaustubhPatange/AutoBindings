@@ -1,5 +1,6 @@
 package com.kpstv.processor.generators
 
+import androidx.annotation.NonNull
 import com.kpstv.processor.utils.BINDTYPE
 import com.kpstv.processor.utils.ClickUtils
 import com.kpstv.processor.utils.Consts
@@ -21,6 +22,7 @@ object ViewHolderGenerator {
         return MethodSpec.methodBuilder("onCreateViewHolder")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)
+            .addAnnotation(NonNull::class.java)
             .addParameter(Consts.CLASSNAME_VIEWGROUP, "parent")
             .addParameter(TypeName.INT, "viewType")
             .addStatement("final ${viewHolderClassName.simpleName()} holder = new ${viewHolderClassName.simpleName()}(android.view.LayoutInflater.from(parent.getContext()).inflate(${layoutId}, parent, false))")
