@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.library_annotations.Bind
+import com.kpstv.library_annotations.OnBind
 import com.kpstv.library_annotations.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_test.view.*
@@ -30,7 +30,7 @@ data class TestClass(val name: String)
 class DemoAdapter {
     private val TAG = javaClass.simpleName
 
-    @Bind
+    @OnBind
     fun bind(view: View, item: TestClass, position: Int) {
         Log.e(TAG, "View: $view, Title: ${item.name}, Position: $position")
         view.item_title.text = item.name

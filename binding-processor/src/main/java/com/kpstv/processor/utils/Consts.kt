@@ -53,4 +53,8 @@ object Consts {
         "View",
         "OnLongClickListener"
     )
+    val CLASSNAME_IMAGEVIEW = ClassName.get(
+        "android.widget",
+        "ImageView"
+    )
 }

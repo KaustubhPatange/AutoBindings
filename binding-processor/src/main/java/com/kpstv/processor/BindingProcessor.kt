@@ -13,6 +13,8 @@ import com.squareup.javapoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
+import javax.annotation.processing.SupportedSourceVersion
+import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
@@ -25,7 +27,9 @@ import javax.lang.model.util.ElementFilter
     "com.kpstv.library_annotations.DiffItemSame",
     "com.kpstv.library_annotations.DiffContentSame",
     "com.kpstv.library_annotations.OnClick",
-    "com.kpstv.library_annotations.OnLongClick"
+    "com.kpstv.library_annotations.OnLongClick",
+    "com.kpstv.library_annotations.BindVisibility",
+    "com.kpstv.library_annotations.BindVisibilityArray"
 )
 class BindingProcessor : AbstractProcessor() {
 

@@ -1,9 +1,10 @@
 name: Build and Release
-on: [push]
+on: [release]
 
 jobs:
   build:
     runs-on: windows-latest
+    if: "contains(github.event.head_commit.message, '[Released]')"
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -13,17 +14,17 @@ jobs:
       - name: Creating local properties file
         run: echo signing.keyId=${{ secrets.SIGNING_KEYID }} >> local.properties
       - run: echo signing.password=${{ secrets.SIGNING_PASSWORD }} >> local.properties
-      - run: echo ossrhUsername=${{ secrets.OSSRH_USERNAME }} >> local.properties 
-      - run: echo ossrhPassword=${{ secrets.OSSRH_PASSWORD }} >> local.properties      
+      - run: echo ossrhUsername=${{ secrets.OSSRH_USERNAME }} >> local.properties
+      - run: echo ossrhPassword=${{ secrets.OSSRH_PASSWORD }} >> local.properties
       - name: Creating key.gpg
         id: write_file
         uses: timheuer/base64-to-file@v1.0.3
         with:
-          fileName: 'key.gpg'
+          fileName: "key.gpg"
           encodedString: ${{ secrets.SIGNING_KEY_GPG }}
       - run: echo ${{ steps.write_file.outputs.filePath }}
-      - run: echo signing.secretKeyRingFile=D\:\\a\\_temp\\key.gpg >> local.properties      
-      - run: type local.properties  
+      - run: echo signing.secretKeyRingFile=D\:\\a\\_temp\\key.gpg >> local.properties
+      - run: type local.properties
       - run: chmod +x gradlew
       - name: Stage annotations
         run: ./gradlew binding-annotations:uploadArchives
