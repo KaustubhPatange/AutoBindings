@@ -4,6 +4,7 @@
     <bytecodeTargetLevel>
       <module name="binding-annotations" target="1.7" />
       <module name="binding-processor" target="1.7" />
+      <module name="lint" target="1.7" />
       <module name="processor" target="1.7" />
     </bytecodeTargetLevel>
   </component>

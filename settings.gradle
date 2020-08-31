@@ -1,3 +1,4 @@
+include ':lint'
 include ':sample-ktx'
 include ':app:library'
 include ':binding-annotations'
