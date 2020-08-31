@@ -3,6 +3,9 @@ package com.kpstv.lint.detectors
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiAnnotation
+import com.kpstv.lint.Utils
+import org.jetbrains.kotlin.psi.psiUtil.endOffset
+import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.visitor.AbstractUastVisitor
@@ -87,7 +90,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             if (clazz.hasAnnotation(ANNOTATION_RECYCLERVIEW)) {
                 val annotation = clazz.getAnnotation(ANNOTATION_RECYCLERVIEW)
                 commonRecyclerViewChecks(clazz, annotation)
-            }else if (clazz.hasAnnotation(ANNOTATION_RECYCLERVIEWLIST)) {
+            } else if (clazz.hasAnnotation(ANNOTATION_RECYCLERVIEWLIST)) {
                 val annotation = clazz.getAnnotation(ANNOTATION_RECYCLERVIEWLIST)
                 commonRecyclerViewChecks(clazz, annotation)
 
@@ -117,12 +120,30 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                     issue = ISSUE_RECYCLERVIEW,
                     scopeClass = clazz,
                     location = context.getNameLocation(clazz),
-                    message = "Annotation must have a `dataSetType` parameter"
+                    message = "Annotation must have a `dataSetType` parameter",
+                    quickfixData = createFixForDataSet(clazz, annotation)
                 )
             }
 
             // Detect usage of OnBind method
             if (!clazz.allMethods.any { it.hasAnnotation(ANNOTATION_ONBIND) }) {
+                // TODO: Help me
+                //  https://stackoverflow.com/questions/63672641/lint-fix-add-method-inside-a-uclass
+
+                /*      val canonicalName = clazz.qualifiedName ?: return
+                val className = canonicalName.substring(
+                    canonicalName.lastIndexOf(".") + 1,
+                    canonicalName.length
+                )
+                    val fix = LintFix.create()
+                        .replace()
+                        .name("Add \"OnBind\" method")
+                        .pattern("$className(.*)")
+                        .with("$className {\nfun bind() { }\n")
+                        .shortenNames()
+                        .range(context.getLocation(clazz.scope))
+                        .build()*/
+
                 context.report(
                     issue = ISSUE_ON_BIND,
                     scopeClass = clazz,
@@ -137,7 +158,8 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_DIFFCONTENTSAME,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_DIFFCONTENTSAME
+                message = MESSAGE_ISSUE_INCORRECT_DIFFCONTENTSAME,
+                quickfixData = commonCorrect("${node.name}(oldItem: Any, newItem: Any): Boolean {")
             )
         }
 
@@ -146,7 +168,8 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_DIFFITEMSAME,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_DIFFITEMSAME
+                message = MESSAGE_ISSUE_INCORRECT_DIFFITEMSAME,
+                quickfixData = commonCorrect("${node.name}(oldItem: Any, newItem: Any): Boolean {")
             )
         }
 
@@ -155,7 +178,8 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_ITEMVIEWTYPE,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_VIEWTYPE
+                message = MESSAGE_ISSUE_INCORRECT_VIEWTYPE,
+                quickfixData = commonCorrect("${node.name}(position: Int): Int {")
             )
         }
 
@@ -164,7 +188,8 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_ONCLICK,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_ONCLICK
+                message = MESSAGE_ISSUE_INCORRECT_ONCLICK,
+                quickfixData = commonCorrect("${node.name}(context: android.content.Context, item: Any, position: Int) {")
             )
         }
 
@@ -173,26 +198,62 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_ONLONGCLICK,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_ONLONGCLICK
+                message = MESSAGE_ISSUE_INCORRECT_ONLONGCLICK,
+                quickfixData = commonCorrect("${node.name}(context: android.content.Context, item: Any, position: Int) {")
             )
         }
 
         private fun reportInCorrectBindAnnotation(node: UMethod) {
             context.report(
                 issue = ISSUE_INCORRECT_BIND,
+                scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_BIND + " ${node.uastParameters.joinToString { it.type.canonicalText }}"
+                message = MESSAGE_ISSUE_INCORRECT_BIND,
+                quickfixData = commonCorrect("${node.name}(view: android.view.View, item: Any, position: Int) {")
             )
+        }
+
+        private fun createFixForDataSet(
+            clazz: UClass,
+            annotation: PsiAnnotation?
+        ): LintFix {
+            val className = Utils.getSimpleName(annotation?.qualifiedName)
+            return LintFix.create()
+                .replace()
+                .name("Add \"dataSetType\" parameter")
+                .pattern("$className(.*)")
+                .with("(dataSetType = Any::class)")
+                .range(context.getLocation(clazz.navigationElement))
+                .shortenNames()
+                .build()
+        }
+
+        private fun commonCorrect(with: String): LintFix {
+            return LintFix.create()
+                .replace()
+                .name("Add method parameters")
+                .pattern(MATCHER_FUNCTION)
+                .shortenNames()
+                .reformat(true)
+                .with(with)
+                .robot(true)
+                .independent(true)
+                .build()
         }
     }
 
     companion object {
+        const val MATCHER_FUNCTION = "fun ((.*?)\\{)"
+
         const val MESSAGE_ISSUE_NO_DIFFITEMSAME = "@DiffItemSame method is not implemented."
         const val MESSAGE_ISSUE_NO_DIFFCONTENTSAME = "@DiffContentSame method is not implemented."
-        const val MESSAGE_ISSUE_INCORRECT_DIFFCONTENTSAME = "@DiffContentSame method is implemented incorrectly."
-        const val MESSAGE_ISSUE_INCORRECT_DIFFITEMSAME = "@DiffItemSame method is implemented incorrectly."
+        const val MESSAGE_ISSUE_INCORRECT_DIFFCONTENTSAME =
+            "@DiffContentSame method is implemented incorrectly."
+        const val MESSAGE_ISSUE_INCORRECT_DIFFITEMSAME =
+            "@DiffItemSame method is implemented incorrectly."
         const val MESSAGE_ISSUE_INCORRECT_BIND = "@OnBind method is implemented incorrectly."
-        const val MESSAGE_ISSUE_INCORRECT_VIEWTYPE = "@ItemViewType method is implemented incorrectly."
+        const val MESSAGE_ISSUE_INCORRECT_VIEWTYPE =
+            "@ItemViewType method is implemented incorrectly."
         const val MESSAGE_ISSUE_INCORRECT_ONCLICK =
             "@Onclick method parameters are implemented wrong."
         const val MESSAGE_ISSUE_INCORRECT_ONLONGCLICK =
@@ -205,7 +266,8 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             "android.content.Context, (.*?), int"
 
         const val ANNOTATION_RECYCLERVIEW = "com.kpstv.library_annotations.RecyclerViewAdapter"
-        const val ANNOTATION_RECYCLERVIEWLIST = "com.kpstv.library_annotations.RecyclerViewListAdapter"
+        const val ANNOTATION_RECYCLERVIEWLIST =
+            "com.kpstv.library_annotations.RecyclerViewListAdapter"
         const val ANNOTATION_DIFFITEMSAME = "com.kpstv.library_annotations.DiffItemSame"
         const val ANNOTATION_DIFFCONTENTSAME = "com.kpstv.library_annotations.DiffContentSame"
         const val ANNOTATION_ONCLICK = "com.kpstv.library_annotations.OnClick"

@@ -1,14 +1,16 @@
 package com.kpstv.customannotations
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.library_annotations.DiffItemSame
 import com.kpstv.library_annotations.OnBind
 import com.kpstv.library_annotations.RecyclerViewAdapter
+import com.kpstv.library_annotations.RecyclerViewListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_test.view.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +22,13 @@ class MainActivity : AppCompatActivity() {
             TestClass("name1"), TestClass("name2")
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
-       // recyclerView.adapter = BindDemoAdapter(DemoAdapter(), models)
+        // recyclerView.adapter = BindDemoAdapter(DemoAdapter(), models)
     }
 }
 
 data class TestClass(val name: String)
 
-/*@RecyclerViewAdapter(R.layout.item_test, TestClass::class)
+@RecyclerViewAdapter(dataSetType = Any::class)
 class DemoAdapter {
     private val TAG = javaClass.simpleName
-
-    @OnBind
-    fun bind(view: View, item: TestClass, position: Int) {
-        Log.e(TAG, "View: $view, Title: ${item.name}, Position: $position")
-        view.item_title.text = item.name
-    }
-}*/
+}

@@ -14,7 +14,7 @@
 - [x] Supports `DiffUtil.ItemCallback` generation method.
 - [x] Support to load images through `Glide`.
 - [x] Support for multiple view types, check [sample-ktx](sample-ktx/).
-- [x] Custom Linter to check incorrect implementation.
+- [x] Custom Linter to check incorrect implementation & auto fix it.
 - [ ] More?
 
 ## Download

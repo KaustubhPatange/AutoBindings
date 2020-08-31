@@ -24,7 +24,6 @@ object Utils {
             )
                 .build()
                 .writeTo(processingEnv.filer)
-            true
         } catch (e: IOException) {
             processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
