@@ -8,9 +8,6 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        viewBinding {
-            enabled true
-        }
         applicationId "com.kpstv.sample_ktx"
         minSdkVersion 21
         targetSdkVersion 30
@@ -25,6 +22,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 

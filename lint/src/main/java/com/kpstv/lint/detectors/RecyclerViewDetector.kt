@@ -3,9 +3,9 @@ package com.kpstv.lint.detectors
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiAnnotation
+import com.kpstv.lint.Language
 import com.kpstv.lint.Utils
-import org.jetbrains.kotlin.psi.psiUtil.endOffset
-import org.jetbrains.kotlin.psi.psiUtil.startOffset
+import com.kpstv.lint.language
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.visitor.AbstractUastVisitor
@@ -208,7 +208,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_BIND,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_BIND,
+                message = MESSAGE_ISSUE_INCORRECT_BIND + " ${node.lang}",
                 quickfixData = commonCorrect("${node.name}(view: android.view.View, item: Any, position: Int) {")
             )
         }
@@ -217,12 +217,15 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             clazz: UClass,
             annotation: PsiAnnotation?
         ): LintFix {
+            val fix = if (clazz.language() == Language.KOTLIN)
+                "(dataSetType = Any::class)"
+            else "(dataSetType = Object.class)"
             val className = Utils.getSimpleName(annotation?.qualifiedName)
             return LintFix.create()
                 .replace()
                 .name("Add \"dataSetType\" parameter")
                 .pattern("$className(.*)")
-                .with("(dataSetType = Any::class)")
+                .with(fix)
                 .range(context.getLocation(clazz.navigationElement))
                 .shortenNames()
                 .build()
