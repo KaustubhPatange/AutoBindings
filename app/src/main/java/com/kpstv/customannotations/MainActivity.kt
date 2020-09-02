@@ -1,14 +1,8 @@
 package com.kpstv.customannotations
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.library_annotations.DiffItemSame
-import com.kpstv.library_annotations.OnBind
-import com.kpstv.library_annotations.RecyclerViewAdapter
 import com.kpstv.library_annotations.RecyclerViewListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
 data class TestClass(val name: String)
 
-@RecyclerViewAdapter(dataSetType = Any::class)
+/*@RecyclerViewListAdapter(dataSetType = TestClass::class)
 class DemoAdapter {
-    private val TAG = javaClass.simpleName
-}
+
+}*/

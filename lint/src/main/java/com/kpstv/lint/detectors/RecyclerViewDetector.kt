@@ -3,6 +3,7 @@ package com.kpstv.lint.detectors
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiClass
 import com.kpstv.lint.Language
 import com.kpstv.lint.Utils
 import com.kpstv.lint.language
@@ -100,7 +101,12 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                         issue = ISSUE_NO_DIFFITEMSAME,
                         scopeClass = clazz,
                         location = context.getNameLocation(clazz),
-                        message = MESSAGE_ISSUE_NO_DIFFITEMSAME
+                        message = MESSAGE_ISSUE_NO_DIFFITEMSAME,
+                        quickfixData = createFixForInsertMethod(
+                            clazz = clazz,
+                            name = "Add \"DiffItemSame\" method",
+                            codeFix = "{\n@${ANNOTATION_DIFFITEMSAME}\nfun diffItemSame(${commonDiffParameters(clazz)}): Boolean { }"
+                        )
                     )
                 }
                 if (!clazz.allMethods.any { it.hasAnnotation(ANNOTATION_DIFFCONTENTSAME) }) {
@@ -108,7 +114,12 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                         issue = ISSUE_NO_DIFFCONTENTSAME,
                         scopeClass = clazz,
                         location = context.getNameLocation(clazz),
-                        message = MESSAGE_ISSUE_NO_DIFFCONTENTSAME
+                        message = MESSAGE_ISSUE_NO_DIFFCONTENTSAME,
+                        quickfixData = createFixForInsertMethod(
+                            clazz = clazz,
+                            name = "Add \"DiffContentSame\" method",
+                            codeFix = "{\n@${ANNOTATION_DIFFCONTENTSAME}\nfun diffContentSame(${commonDiffParameters(clazz)}): Boolean { }"
+                        )
                     )
                 }
             }
@@ -127,28 +138,16 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
 
             // Detect usage of OnBind method
             if (!clazz.allMethods.any { it.hasAnnotation(ANNOTATION_ONBIND) }) {
-                // TODO: Help me
-                //  https://stackoverflow.com/questions/63672641/lint-fix-add-method-inside-a-uclass
-
-                /*      val canonicalName = clazz.qualifiedName ?: return
-                val className = canonicalName.substring(
-                    canonicalName.lastIndexOf(".") + 1,
-                    canonicalName.length
-                )
-                    val fix = LintFix.create()
-                        .replace()
-                        .name("Add \"OnBind\" method")
-                        .pattern("$className(.*)")
-                        .with("$className {\nfun bind() { }\n")
-                        .shortenNames()
-                        .range(context.getLocation(clazz.scope))
-                        .build()*/
-
                 context.report(
                     issue = ISSUE_ON_BIND,
                     scopeClass = clazz,
                     location = context.getNameLocation(clazz),
-                    message = "There must be at least one @OnBind() method"
+                    message = "There must be at least one @OnBind() method",
+                    quickfixData = createFixForInsertMethod(
+                        clazz = clazz,
+                        name = "Add \"OnBind\" method",
+                        codeFix = "{\n@${ANNOTATION_ONBIND}(layoutId = )\nfun bind($CORRECTED_BIND_PARAMETERS) { }"
+                    )
                 )
             }
         }
@@ -159,7 +158,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 scope = node.context,
                 location = context.getLocation(node),
                 message = MESSAGE_ISSUE_INCORRECT_DIFFCONTENTSAME,
-                quickfixData = commonCorrect("${node.name}(oldItem: Any, newItem: Any): Boolean {")
+                quickfixData = commonCorrect("${node.name}(${commonDiffParameters(node.containingClass)}): Boolean {")
             )
         }
 
@@ -169,7 +168,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 scope = node.context,
                 location = context.getLocation(node),
                 message = MESSAGE_ISSUE_INCORRECT_DIFFITEMSAME,
-                quickfixData = commonCorrect("${node.name}(oldItem: Any, newItem: Any): Boolean {")
+                quickfixData = commonCorrect("${node.name}(${commonDiffParameters(node.containingClass)}): Boolean {")
             )
         }
 
@@ -208,9 +207,32 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 issue = ISSUE_INCORRECT_BIND,
                 scope = node.context,
                 location = context.getLocation(node),
-                message = MESSAGE_ISSUE_INCORRECT_BIND + " ${node.lang}",
-                quickfixData = commonCorrect("${node.name}(view: android.view.View, item: Any, position: Int) {")
+                message = MESSAGE_ISSUE_INCORRECT_BIND,
+                quickfixData = commonCorrect("${node.name}($CORRECTED_BIND_PARAMETERS) {")
             )
+        }
+
+        private fun createFixForInsertMethod(
+            clazz: UClass,
+            name: String,
+            codeFix: String
+        ): LintFix {
+            return LintFix.create()
+                .replace()
+                .name(name)
+                .pattern("${Utils.getSimpleName(clazz.qualifiedName)}(.*)")
+                .with(codeFix)
+                .end()
+                .reformat(true)
+                .shortenNames()
+                .range(
+                    context.getRangeLocation(
+                        clazz.navigationElement,
+                        0,
+                        clazz.asSourceString().length
+                    )
+                )
+                .build()
         }
 
         private fun createFixForDataSet(
@@ -243,9 +265,17 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 .independent(true)
                 .build()
         }
+
+        private fun commonDiffParameters(clazz: PsiClass?): String {
+            val dataClass = Utils.findAnnotationValue(clazz, "dataSetType")
+                .replace("::class", "")
+            return "oldItem: $dataClass, newItem: $dataClass"
+        }
     }
 
     companion object {
+        const val CORRECTED_BIND_PARAMETERS = "view: android.view.View, item: Any, position: Int"
+
         const val MATCHER_FUNCTION = "fun ((.*?)\\{)"
 
         const val MESSAGE_ISSUE_NO_DIFFITEMSAME = "@DiffItemSame method is not implemented."
@@ -406,7 +436,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             implementation = IMPLEMENTATION
         )
         val ISSUE_NO_DIFFCONTENTSAME: Issue = Issue.create(
-            id = "noDiffItemSameCallback",
+            id = "noDiffContentSameCallback",
             briefDescription = MESSAGE_ISSUE_NO_DIFFCONTENTSAME,
             explanation = """
                     The method is not implemented which can lead to
