@@ -1,7 +1,6 @@
 package com.kpstv.processor
 
-import com.kpstv.library_annotations.RecyclerViewAdapter
-import com.kpstv.library_annotations.RecyclerViewListAdapter
+import com.kpstv.library_annotations.*
 import com.kpstv.processor.generators.*
 import com.kpstv.processor.utils.Consts
 import com.kpstv.processor.utils.Utils
@@ -10,14 +9,14 @@ import com.squareup.javapoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
-import javax.annotation.processing.SupportedSourceVersion
-import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
 
 
 @SupportedAnnotationTypes(
+    "com.kpstv.library_annotations.AutoGenerateConverter",
+    "com.kpstv.library_annotations.AutoGenerateListConverter",
     "com.kpstv.library_annotations.RecyclerViewAdapter",
     "com.kpstv.library_annotations.RecyclerViewListAdapter",
     "com.kpstv.library_annotations.Bind",
@@ -36,13 +35,51 @@ class BindingProcessor : AbstractProcessor() {
     ): Boolean {
         parseRecyclerViewAnnotation(env)
         parseRecyclerViewListAnnotation(env)
+        parseAutoGenerateAnnotations(env)
         return true
+    }
+
+    private fun parseAutoGenerateAnnotations(env: RoundEnvironment?) {
+        val autoGenerateAnnotationTypes =
+            env?.getElementsAnnotatedWith(AutoGenerateConverter::class.java)
+        val normalTypes = ElementFilter.typesIn(autoGenerateAnnotationTypes).toMutableList()
+
+        val autoGenerateListAnnotationTypes =
+            env?.getElementsAnnotatedWith(AutoGenerateListConverter::class.java)
+        val listTypes = ElementFilter.typesIn(autoGenerateListAnnotationTypes).toMutableList()
+
+        normalTypes.forEach { typeElement ->
+            val annotationAttributes = typeElement.getAnnotation(AutoGenerateConverter::class.java)
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, false)
+        }
+        listTypes.forEach { typeElement ->
+            val annotationAttributes = typeElement.getAnnotation(AutoGenerateListConverter::class.java)
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, true)
+        }
+    }
+
+    private fun commonParseConverterAnnotation(typeElement: TypeElement, using: ConverterType, isListConverter: Boolean) {
+        val packageName =
+            processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
+
+        val typeName = typeElement.simpleName.toString()
+
+        val originalClassName = ClassName.get(packageName, typeName)
+
+        val generatedClassName = ClassName.get(packageName, typeName + if (!isListConverter) Consts.converterSuffix else Consts.converterListSuffix)
+
+        val converterBuilder = TypeSpec.classBuilder(generatedClassName)
+            .addModifiers(Modifier.PUBLIC)
+            .also { TypeConverterGenerator.create(it, using, originalClassName, isListConverter) }
+
+        Utils.write(packageName, converterBuilder.build(), typeElement, processingEnv)
     }
 
     private fun parseRecyclerViewListAnnotation(env: RoundEnvironment?) {
         val recyclerViewListAnnotations =
             env?.getElementsAnnotatedWith(RecyclerViewListAdapter::class.java)
         val types = ElementFilter.typesIn(recyclerViewListAnnotations).toMutableList()
+
         types.forEach { typeElement ->
             val dataTypeMirror =
                 typeElement.getAnnotationClassValue<RecyclerViewListAdapter> { dataSetType }
