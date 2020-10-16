@@ -1,7 +1,7 @@
 package com.kpstv.processor.generators
 
-import com.kpstv.library_annotations.GlideLoadArray
-import com.kpstv.library_annotations.OnBind
+import com.kpstv.bindings.GlideLoadArray
+import com.kpstv.bindings.OnBind
 import com.kpstv.processor.utils.BINDTYPE
 import com.kpstv.processor.utils.ClickUtils
 import com.kpstv.processor.utils.Consts

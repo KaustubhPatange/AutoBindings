@@ -1,6 +1,6 @@
 package com.kpstv.processor
 
-import com.kpstv.library_annotations.*
+import com.kpstv.bindings.*
 import com.kpstv.processor.generators.*
 import com.kpstv.processor.utils.Consts
 import com.kpstv.processor.utils.Utils
@@ -15,17 +15,10 @@ import javax.lang.model.util.ElementFilter
 
 
 @SupportedAnnotationTypes(
-    "com.kpstv.library_annotations.AutoGenerateConverter",
-    "com.kpstv.library_annotations.AutoGenerateListConverter",
-    "com.kpstv.library_annotations.RecyclerViewAdapter",
-    "com.kpstv.library_annotations.RecyclerViewListAdapter",
-    "com.kpstv.library_annotations.Bind",
-    "com.kpstv.library_annotations.DiffItemSame",
-    "com.kpstv.library_annotations.DiffContentSame",
-    "com.kpstv.library_annotations.OnClick",
-    "com.kpstv.library_annotations.OnLongClick",
-    "com.kpstv.library_annotations.GlideLoad",
-    "com.kpstv.library_annotations.GlideLoadArray"
+    "com.kpstv.bindings.AutoGenerateConverter",
+    "com.kpstv.bindings.AutoGenerateListConverter",
+    "com.kpstv.bindings.RecyclerViewAdapter",
+    "com.kpstv.bindings.RecyclerViewListAdapter"
 )
 class BindingProcessor : AbstractProcessor() {
 

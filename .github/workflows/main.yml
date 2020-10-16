@@ -27,11 +27,11 @@ jobs:
       - run: type local.properties
       - run: chmod +x gradlew
       - name: Stage annotations
-        run: ./gradlew binding-annotations:uploadArchives
+        run: ./gradlew autobindings-annotations:uploadArchives
       - name: Stage compiler
-        run: ./gradlew binding-processor:uploadArchives
+        run: ./gradlew autobindings-compiler:uploadArchives
       - name: Stage library
-        run: ./gradlew app:library:publishReleasePublicationToSonatypeRepository
+        run: ./gradlew autobindings:publishReleasePublicationToSonatypeRepository
       - name: Closing repository
         run: ./gradlew closeRepository
       - name: Release repository

@@ -1,6 +1,6 @@
 package com.kpstv.processor.generators
 
-import com.kpstv.library_annotations.ItemViewType
+import com.kpstv.bindings.ItemViewType
 import com.kpstv.processor.utils.Consts
 import com.kpstv.processor.utils.getElementFromAnnotation
 import com.squareup.javapoet.MethodSpec

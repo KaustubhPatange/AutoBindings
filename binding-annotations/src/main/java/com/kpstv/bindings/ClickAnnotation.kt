@@ -1,4 +1,4 @@
-package com.kpstv.library_annotations
+package com.kpstv.bindings
 
 import androidx.annotation.IdRes
 

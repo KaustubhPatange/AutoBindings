@@ -1,4 +1,4 @@
-package com.kpstv.library_annotations
+package com.kpstv.bindings
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
@@ -9,5 +9,5 @@ annotation class AutoGenerateConverter(val using: ConverterType)
 annotation class AutoGenerateListConverter(val using: ConverterType)
 
 enum class ConverterType {
-    GSON, MOSHI
+    GSON, MOSHI, KOTLIN_SERIALIZATION
 }

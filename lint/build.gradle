@@ -10,7 +10,7 @@ dependencies {
     testImplementation "com.android.tools.lint:lint:27.0.1"
     testImplementation "com.android.tools.lint:lint-tests:27.0.1"
 
-    compileOnly project(":binding-annotations")
+    compileOnly project(":autobindings-annotations")
     compileOnly 'androidx.annotation:annotation:1.1.0'
 }
 

@@ -10,9 +10,6 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 1
-        versionName versions.library
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -30,14 +27,14 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    api project(":binding-annotations")
+    api project(":autobindings-annotations")
     lintPublish project(":lint")
 }
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
     PUBLISH_ARTIFACT_ID = 'autobindings'
-    PUBLISH_VERSION = android.defaultConfig.versionName
+    PUBLISH_VERSION = versions.library
 }
 
 apply from: "${rootProject.projectDir}/publish-aar.gradle"

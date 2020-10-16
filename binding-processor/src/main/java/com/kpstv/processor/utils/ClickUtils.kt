@@ -1,7 +1,7 @@
 package com.kpstv.processor.utils
 
-import com.kpstv.library_annotations.OnClick
-import com.kpstv.library_annotations.OnLongClick
+import com.kpstv.bindings.OnClick
+import com.kpstv.bindings.OnLongClick
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName

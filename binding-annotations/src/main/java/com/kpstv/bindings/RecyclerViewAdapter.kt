@@ -1,13 +1,13 @@
-package com.kpstv.library_annotations
+package com.kpstv.bindings
 
 import kotlin.reflect.KClass
 
 /**
- * Automatically generates modern RecyclerView Adapter.
+ * Automatically generates standard RecyclerView Adapter.
  *
  * Code example (Kotlin)
  * ```
- * @RecyclerViewListAdapter(POJO::class.java)
+ * @RecyclerViewAdapter(POJO::class.java)
  * class TestAdapter {
  *  ...
  * }
@@ -18,4 +18,4 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class RecyclerViewListAdapter(val dataSetType: KClass<*> = Any::class)
+annotation class RecyclerViewAdapter(val dataSetType: KClass<*> = Any::class)

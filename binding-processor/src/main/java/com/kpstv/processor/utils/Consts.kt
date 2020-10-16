@@ -98,4 +98,24 @@ object Consts {
         "java.util",
         "List"
     )
+
+    val CLASSNAME_KSERIALIZER = ClassName.get(
+        "kotlinx.serialization",
+        "KSerializer"
+    )
+
+    val CLASSNAME_SERIALIZERSKT = ClassName.get(
+        "kotlinx.serialization",
+        "SerializersKt"
+    )
+
+    val CLASSANAME_KX_JSON = ClassName.get(
+        "kotlinx.serialization.json",
+        "Json"
+    )
+
+    val CLASSNAME_KX_REFLECTION = ClassName.get(
+        "kotlin.jvm.internal",
+        "Reflection"
+    )
 }

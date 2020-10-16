@@ -1,8 +1,7 @@
 package com.kpstv.processor.utils
 
-import com.kpstv.library_annotations.ImageTransformationType
+import com.kpstv.bindings.ImageTransformationType
 import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import java.io.IOException
 import java.lang.StringBuilder

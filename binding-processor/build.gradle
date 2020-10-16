@@ -7,7 +7,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.squareup:javapoet:1.12.1'
-    compileOnly project(":binding-annotations")
+    compileOnly project(":autobindings-annotations")
     compileOnly 'com.google.android.material:material:1.2.0-beta01'
 }
 

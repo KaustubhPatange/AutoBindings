@@ -1,6 +1,6 @@
 package com.kpstv.processor.generators
 
-import com.kpstv.library_annotations.ConverterType
+import com.kpstv.bindings.ConverterType
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.*
 import java.io.IOException
@@ -41,6 +41,15 @@ object TypeConverterGenerator {
                     .addStatement("\te.printStackTrace()")
                     .addStatement("\treturn null")
                     .add("}\n")
+            }
+            ConverterType.KOTLIN_SERIALIZATION -> {
+                val serializer = "${Consts.CLASSNAME_KSERIALIZER} serializer = ${Consts.CLASSNAME_SERIALIZERSKT}.serializer(${Consts.CLASSANAME_KX_JSON}.Default.getSerializersModule(), ${Consts.CLASSNAME_KX_REFLECTION}.typeof(${originalClassName}.class))"
+                toMethodCode
+                    .addStatement(serializer)
+                    .addStatement("return ${Consts.CLASSANAME_KX_JSON}.Default.encodeToString(serializer, ${Consts.converterName})")
+                fromMethodCode
+                    .addStatement(serializer)
+                    .addStatement("return ${originalClassName}${Consts.CLASSANAME_KX_JSON}.Default.decodeFromString(serializer, ${Consts.converterName})")
             }
         }
 

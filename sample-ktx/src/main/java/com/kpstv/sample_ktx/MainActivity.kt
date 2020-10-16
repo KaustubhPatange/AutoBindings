@@ -2,12 +2,20 @@ package com.kpstv.sample_ktx
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.library_annotations.*
+import com.kpstv.bindings.DiffContentSame
+import com.kpstv.bindings.DiffItemSame
+import com.kpstv.bindings.GlideLoad
+import com.kpstv.bindings.GlideLoadArray
+import com.kpstv.bindings.ImageTransformationType
+import com.kpstv.bindings.ItemViewType
+import com.kpstv.bindings.OnBind
+import com.kpstv.bindings.OnClick
+import com.kpstv.bindings.OnLongClick
+import com.kpstv.bindings.RecyclerViewListAdapter
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_small_layout.view.*
