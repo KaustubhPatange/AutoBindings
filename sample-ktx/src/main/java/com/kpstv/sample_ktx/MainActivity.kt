@@ -36,8 +36,6 @@ class MainActivity : AppCompatActivity() {
 /**
  * POJO class
  */
-@Serializable
-@AutoGenerateConverter(using = ConverterType.KOTLIN_SERIALIZATION)
 data class Data(val name: String, val visible: Boolean = true)
 
 /**
