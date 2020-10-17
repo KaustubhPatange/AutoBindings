@@ -3,6 +3,8 @@ package com.kpstv.lint.detectors
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiAnnotation
+import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.lint.Utils
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.visitor.AbstractUastVisitor
 
@@ -31,11 +33,11 @@ class TypeConvertDetector : Detector(), Detector.UastScanner {
                 val converterAnnotation = node.getAnnotation(ANNOTATION_LIST_CONVERTER)
                 if (converterAnnotation?.findAttributeValue("using")?.text == "ConverterType.MOSHI") {
                     if (!node.hasAnnotation(ANNOTATION_JSONCLASS))
-                        reportNoJsonClass(node)
+                        reportNoJsonClass(node, converterAnnotation)
                     else {
                         val jsonClassAnnotation = node.getAnnotation(ANNOTATION_JSONCLASS)
                         if (jsonClassAnnotation?.findAttributeValue("generateAdapter")?.text != "true")
-                            reportNoJsonClass(node)
+                            reportNoJsonClass(node, converterAnnotation)
                     }
                 }
                 commonSerializationReport(node, converterAnnotation)
@@ -43,24 +45,47 @@ class TypeConvertDetector : Detector(), Detector.UastScanner {
             return super.visitClass(node)
         }
 
-        private fun reportNoJsonClass(node: UClass) {
+        private fun reportNoJsonClass(node: UClass, converterAnnotation: PsiAnnotation?) {
+            val className = Utils.getSimpleName(converterAnnotation?.qualifiedName)
             context.report(
                 issue = ISSUE_NO_JSONCLASS,
                 scopeClass = node,
-                location = context.getNameLocation(node),
-                message = "Class must be annotated with @JsonClass(generateAdapter = true)"
+                location = context.getLocation(node.navigationElement),
+                message = "Class must be annotated with @JsonClass(generateAdapter = true).",
+                quickfixData = LintFix.create()
+                    .replace()
+                    .name("Add @JsonClass(generateAdapter = true) annotation")
+                    .pattern("(.*)@$className")
+                    .beginning()
+                    .with("@${ANNOTATION_JSONCLASS}(generateAdapter = true)")
+                    .reformat(true)
+                    .range(context.getLocation(node.navigationElement))
+                    .shortenNames()
+                    .build()
             )
         }
 
         private fun commonSerializationReport(node: UClass, converterAnnotation: PsiAnnotation?) {
             if (converterAnnotation?.findAttributeValue("using")?.text == "ConverterType.KOTLIN_SERIALIZATION") {
-                if (!node.hasAnnotation(ANNOTATION_SERIALIZABLE))
+                if (!node.hasAnnotation(ANNOTATION_SERIALIZABLE)) {
+                    val className = Utils.getSimpleName(converterAnnotation.qualifiedName)
                     context.report(
                         issue = ISSUE_NO_SERIALIZABLE,
                         scopeClass = node,
-                        location = context.getNameLocation(node),
-                        message = "Class must be annotated with @Serializable."
+                        location = context.getLocation(node.navigationElement),
+                        message = "Class must be annotated with @Serializable.",
+                        quickfixData = LintFix.create()
+                            .replace()
+                            .name("Add @Serializable annotation")
+                            .pattern("(.*)@$className")
+                            .beginning()
+                            .with("@${ANNOTATION_SERIALIZABLE}")
+                            .reformat(true)
+                            .range(context.getLocation(node.navigationElement))
+                            .shortenNames()
+                            .build()
                     )
+                }
             }
         }
     }

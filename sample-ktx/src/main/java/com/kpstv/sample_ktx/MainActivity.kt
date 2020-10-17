@@ -40,7 +40,7 @@ data class Data(val name: String, val visible: Boolean = true)
 /**
  * An example of using RecyclerView's modern ListAdapter
  */
-@RecyclerViewListAdapter(Data::class)
+@RecyclerViewListAdapter
 class TestAdapter {
 
     @DiffContentSame

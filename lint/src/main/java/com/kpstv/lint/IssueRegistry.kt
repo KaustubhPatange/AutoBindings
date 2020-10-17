@@ -10,6 +10,9 @@ class IssueRegistry : IssueRegistry() {
 
     override val api: Int = CURRENT_API
 
+    override val minApi: Int
+        get() = api
+
     override val issues: List<Issue>
         get() = listOf(
             RecyclerViewDetector.ISSUE_ON_BIND,

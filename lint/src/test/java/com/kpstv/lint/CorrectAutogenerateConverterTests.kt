@@ -44,7 +44,7 @@ class CorrectAutogenerateConverterTests {
             import com.kpstv.bindings.ConverterType
             import com.squareup.moshi.JsonClass
             
-            @JsonClass(generateAdapter = false)
+            @JsonClass(generateAdapter = true)
             @AutoGenerateListConverter(using = ConverterType.MOSHI)
             data class User(val name: String)
         """

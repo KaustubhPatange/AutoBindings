@@ -239,9 +239,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             clazz: UClass,
             annotation: PsiAnnotation?
         ): LintFix {
-            val fix = if (clazz.language() == Language.KOTLIN)
-                "(dataSetType = Any::class)"
-            else "(dataSetType = Object.class)"
+            val fix = "(dataSetType = Any::class)"
             val className = Utils.getSimpleName(annotation?.qualifiedName)
             return LintFix.create()
                 .replace()
