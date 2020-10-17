@@ -118,4 +118,14 @@ object Consts {
         "kotlin.jvm.internal",
         "Reflection"
     )
+
+    val CLASSNAME_MOSHI_TYPES = ClassName.get(
+        "com.squareup.moshi",
+        "Types"
+    )
+
+    val CLASSNAME_KTYPE_PROJECTION = ClassName.get(
+        "kotlin.reflect",
+        "KTypeProjection"
+    )
 }

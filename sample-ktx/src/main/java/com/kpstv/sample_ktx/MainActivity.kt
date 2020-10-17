@@ -6,19 +6,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.bindings.DiffContentSame
-import com.kpstv.bindings.DiffItemSame
-import com.kpstv.bindings.GlideLoad
-import com.kpstv.bindings.GlideLoadArray
-import com.kpstv.bindings.ImageTransformationType
-import com.kpstv.bindings.ItemViewType
-import com.kpstv.bindings.OnBind
-import com.kpstv.bindings.OnClick
-import com.kpstv.bindings.OnLongClick
-import com.kpstv.bindings.RecyclerViewListAdapter
+import com.kpstv.bindings.*
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
+import com.squareup.moshi.JsonClass
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_small_layout.view.*
+import kotlinx.serialization.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 /**
  * POJO class
  */
+@Serializable
+@AutoGenerateConverter(using = ConverterType.KOTLIN_SERIALIZATION)
 data class Data(val name: String, val visible: Boolean = true)
 
 /**

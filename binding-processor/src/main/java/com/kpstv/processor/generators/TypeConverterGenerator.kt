@@ -11,45 +11,74 @@ object TypeConverterGenerator {
         val parameterizedTypeName = ParameterizedTypeName.get(Consts.CLASSNAME_LIST, originalClassName)
         val parameter = if (!isListConverter) originalClassName.simpleName() else "List<${originalClassName.simpleName()}>"
 
-        val typeStatement = "${Consts.CLASSNAME_TYPE} type = new ${Consts.CLASSNAME_TYPETOKEN}<${parameter}>(){}.getType()"
+        val typeClass = if (!isListConverter) originalClassName.canonicalName() else "List"
 
         val toMethodCode = CodeBlock.builder()
             .addStatement("if (${Consts.converterName} == null) return null")
-            .addStatement(typeStatement)
 
         val fromMethodCode = CodeBlock.builder()
             .addStatement("if (${Consts.converterName} == null) return null")
-            .addStatement(typeStatement)
 
         when(converterType) {
             ConverterType.GSON -> {
+                val typeStatement = CodeBlock.builder()
+                    .addStatement("\$T type = new \$T<${parameter}>(){}.getType()", Consts.CLASSNAME_TYPE, Consts.CLASSNAME_TYPETOKEN)
+                    .addStatement("\$T gson = new \$T()", Consts.CLASSNAME_GSON, Consts.CLASSNAME_GSON)
+                    .build()
                 toMethodCode
-                    .addStatement("${Consts.CLASSNAME_GSON} gson = new ${Consts.CLASSNAME_GSON}()")
+                    .add(typeStatement)
                     .addStatement("return gson.toJson(${Consts.converterName}, type)")
 
                 fromMethodCode
-                    .addStatement("${Consts.CLASSNAME_GSON} gson = new ${Consts.CLASSNAME_GSON}()")
+                    .add(typeStatement)
                     .addStatement("return gson.fromJson(${Consts.converterName}, type)")
             }
             ConverterType.MOSHI -> {
+                /**
+                 * For List<T> data classes needs @JsonClass(generateAdapter = true) annotation
+                 */
+                val typeStatement = if (!isListConverter)
+                    CodeBlock.builder().add("\$T.class", originalClassName).build()
+                else CodeBlock.builder().add("\$T.newParameterizedType(\$T.class, \$T.class)", Consts.CLASSNAME_MOSHI_TYPES, List::class.java, originalClassName).build()
                 toMethodCode
-                    .addStatement("return new ${Consts.ClASSNAME_MOSHI}.Builder().build().adapter(type).toJson(${Consts.converterName})")
+                    .add("return new \$T.Builder().build().adapter(", Consts.ClASSNAME_MOSHI)
+                    .add(typeStatement)
+                    .add(").toJson(${Consts.converterName});")
                 fromMethodCode
                     .add("try {\n")
-                    .addStatement("\treturn (${parameter}) new ${Consts.ClASSNAME_MOSHI}.Builder().build().adapter(type).fromJson(${Consts.converterName})")
-                    .add("} catch (${IOException::class.qualifiedName} e) {\n")
+                    .add("\treturn (${parameter}) new \$T.Builder().build().adapter(", Consts.ClASSNAME_MOSHI)
+                    .add(typeStatement)
+                    .add(").fromJson(${Consts.converterName});\n")
+                    .add("} catch (\$T e) {\n", IOException::class.java)
                     .addStatement("\te.printStackTrace()")
                     .addStatement("\treturn null")
                     .add("}\n")
             }
             ConverterType.KOTLIN_SERIALIZATION -> {
-                val serializer = "${Consts.CLASSNAME_KSERIALIZER} serializer = ${Consts.CLASSNAME_SERIALIZERSKT}.serializer(${Consts.CLASSANAME_KX_JSON}.Default.getSerializersModule(), ${Consts.CLASSNAME_KX_REFLECTION}.typeof(${originalClassName}.class))"
+                /**
+                 * Class requires @Serializable annotation
+                 * Reflection.typeOf(List.class, KTypeProjection.Companion.invariant(Reflection.typeOf(Data.class)))
+                 */
+                val reflectionType = if (!isListConverter)
+                    CodeBlock.builder().add("\$T.typeOf(\$T.class))", Consts.CLASSNAME_KX_REFLECTION, originalClassName).build()
+                else
+                    CodeBlock.builder()
+                        .add("\$T.typeOf(\$T.class, \$T.Companion.invariant(\$T.typeOf(\$T.class))))",
+                            Consts.CLASSNAME_KX_REFLECTION, List::class.java, Consts.CLASSNAME_KTYPE_PROJECTION, Consts.CLASSNAME_KX_REFLECTION, originalClassName)
+                        .build()
+
+                val serializer = CodeBlock.builder()
+                    .add("\$T serializer = \$T.serializer(\$T.Default.getSerializersModule(), ",
+                        Consts.CLASSNAME_KSERIALIZER, Consts.CLASSNAME_SERIALIZERSKT, Consts.CLASSANAME_KX_JSON,)
+                    .add(reflectionType)
+                    .build()
+
                 toMethodCode
                     .addStatement(serializer)
-                    .addStatement("return ${Consts.CLASSANAME_KX_JSON}.Default.encodeToString(serializer, ${Consts.converterName})")
+                    .addStatement("return \$T.Default.encodeToString(serializer, ${Consts.converterName})", Consts.CLASSANAME_KX_JSON)
                 fromMethodCode
                     .addStatement(serializer)
-                    .addStatement("return ${originalClassName}${Consts.CLASSANAME_KX_JSON}.Default.decodeFromString(serializer, ${Consts.converterName})")
+                    .addStatement("return (${parameter})\$T.Default.decodeFromString(serializer, ${Consts.converterName})", Consts.CLASSANAME_KX_JSON)
             }
         }
 

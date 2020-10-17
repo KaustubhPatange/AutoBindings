@@ -2,7 +2,7 @@ name: build
 on: [push]
 jobs:
   buildJob:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -10,5 +10,8 @@ jobs:
         with:
           java-version: 1.8
       - run: chmod +x gradlew
-      - name: Build Gradle
-        run: ./gradlew app:assembleDebug
+      - run: chmod -R 777 ./
+      - name: Build Library
+        run: ./gradlew autobindings:build
+      - name: Build Compiler
+        run: ./gradlew autobindings-compiler:build
