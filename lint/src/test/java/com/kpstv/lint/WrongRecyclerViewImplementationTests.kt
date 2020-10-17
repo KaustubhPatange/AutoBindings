@@ -13,7 +13,7 @@ class WrongRecyclerViewImplementationTests {
         val stubFile = kotlin(
             """
             package com.kpstv.lint
-            import com.kpstv.library_annotations.RecyclerViewAdapter
+            import com.kpstv.bindings.RecyclerViewAdapter
             @RecyclerViewAdapter
             class TestAdapter {
             }
@@ -37,7 +37,7 @@ class WrongRecyclerViewImplementationTests {
         val stubFile = kotlin(
             """
                 package com.kpstv.lint
-                import com.kpstv.library_annotations.RecyclerViewAdapter
+                import com.kpstv.bindings.RecyclerViewAdapter
                 @RecyclerViewAdapter()
                 class TestAdapter {
                 }
@@ -62,8 +62,8 @@ class WrongRecyclerViewImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.RecyclerViewAdapter
-                import com.kpstv.library_annotations.OnBind
+                import com.kpstv.bindings.RecyclerViewAdapter
+                import com.kpstv.bindings.OnBind
                 
                 @RecyclerViewAdapter
                 class TestAdapter {
@@ -96,8 +96,8 @@ class WrongRecyclerViewImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.OnClick
-                import com.kpstv.library_annotations.RecyclerViewAdapter
+                import com.kpstv.bindings.OnClick
+                import com.kpstv.bindings.RecyclerViewAdapter
 
                 @RecyclerViewAdapter
                 class TestAdapter {
@@ -129,8 +129,8 @@ class WrongRecyclerViewImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.ItemViewType
-                import com.kpstv.library_annotations.RecyclerViewAdapter
+                import com.kpstv.bindings.ItemViewType
+                import com.kpstv.bindings.RecyclerViewAdapter
 
                 @RecyclerViewAdapter
                 class TestAdapter {

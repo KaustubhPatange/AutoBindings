@@ -298,15 +298,15 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
         const val DETECTOR_INCORRECT_CLICK =
             "android.content.Context, (.*?), int"
 
-        const val ANNOTATION_RECYCLERVIEW = "com.kpstv.library_annotations.RecyclerViewAdapter"
+        const val ANNOTATION_RECYCLERVIEW = "com.kpstv.bindings.RecyclerViewAdapter"
         const val ANNOTATION_RECYCLERVIEWLIST =
-            "com.kpstv.library_annotations.RecyclerViewListAdapter"
-        const val ANNOTATION_DIFFITEMSAME = "com.kpstv.library_annotations.DiffItemSame"
-        const val ANNOTATION_DIFFCONTENTSAME = "com.kpstv.library_annotations.DiffContentSame"
-        const val ANNOTATION_ONCLICK = "com.kpstv.library_annotations.OnClick"
-        const val ANNOTATION_ONLONGCLICK = "com.kpstv.library_annotations.OnLongClick"
-        const val ANNOTATION_ONBIND = "com.kpstv.library_annotations.OnBind"
-        const val ANNOTATION_ITEMVIEWTYPE = "com.kpstv.library_annotations.ItemViewType"
+            "com.kpstv.bindings.RecyclerViewListAdapter"
+        const val ANNOTATION_DIFFITEMSAME = "com.kpstv.bindings.DiffItemSame"
+        const val ANNOTATION_DIFFCONTENTSAME = "com.kpstv.bindings.DiffContentSame"
+        const val ANNOTATION_ONCLICK = "com.kpstv.bindings.OnClick"
+        const val ANNOTATION_ONLONGCLICK = "com.kpstv.bindings.OnLongClick"
+        const val ANNOTATION_ONBIND = "com.kpstv.bindings.OnBind"
+        const val ANNOTATION_ITEMVIEWTYPE = "com.kpstv.bindings.ItemViewType"
 
         private val IMPLEMENTATION = Implementation(
             RecyclerViewDetector::class.java,

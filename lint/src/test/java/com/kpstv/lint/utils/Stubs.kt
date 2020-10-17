@@ -6,7 +6,7 @@ import com.android.tools.lint.checks.infrastructure.TestFiles.kotlin
 object Stubs {
     val RECYCLERVIEW_ANNOTATION: TestFile = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             import kotlin.reflect.KClass
             
             @Target(AnnotationTarget.CLASS)
@@ -16,7 +16,7 @@ object Stubs {
     ).indented()
     val RECYCLERVIEWLIST_ANNOTATION: TestFile = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             import kotlin.reflect.KClass
             
             @Target(AnnotationTarget.CLASS)
@@ -26,7 +26,7 @@ object Stubs {
     ).indented()
     val ONBIND_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             import androidx.annotation.LayoutRes
             
             @Target(AnnotationTarget.FUNCTION)
@@ -36,7 +36,7 @@ object Stubs {
     ).indented()
     val ONCLICK_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             
             @Target(AnnotationTarget.FUNCTION)
             @Retention(AnnotationRetention.SOURCE)
@@ -49,7 +49,7 @@ object Stubs {
     ).indented()
     val ONLONGCLICK_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             
             @Target(AnnotationTarget.FUNCTION)
             @Retention(AnnotationRetention.SOURCE)
@@ -62,7 +62,7 @@ object Stubs {
     ).indented()
     val ITEMVIEWTYPE_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             
             @Target(AnnotationTarget.FUNCTION)
             @Retention(AnnotationRetention.SOURCE)
@@ -71,7 +71,7 @@ object Stubs {
     ).indented()
     val DIFFITEMSAME_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             
             @Target(AnnotationTarget.FUNCTION)
             @Retention(AnnotationRetention.SOURCE)
@@ -80,23 +80,74 @@ object Stubs {
     ).indented()
     val DIFFCONTENTSAME_ANNOTATION = kotlin(
         """
-            package com.kpstv.library_annotations
+            package com.kpstv.bindings
             
             @Target(AnnotationTarget.FUNCTION)
             @Retention(AnnotationRetention.SOURCE)
             annotation class DiffContentSame
         """
     ).indented()
+
     val CLASS_VIEW = kotlin(
-     """
+        """
          package android.view
          class View { }
      """
     ).indented()
+
     val CLASS_CONTEXT = kotlin(
         """
             package android.content
+            
             class Context { }
+        """
+    ).indented()
+
+    val CLASS_KOTLIN_SERIALIZABLE = kotlin(
+        """
+            package kotlinx.serialization
+            annotation class Serializable
+        """
+    )
+
+    val CLASS_CONVERTER_TYPE = kotlin(
+        """
+            package com.kpstv.bindings
+            
+            enum class ConverterType {
+                GSON, MOSHI, KOTLIN_SERIALIZATION
+            } 
+        """
+    ).indented()
+
+    val CLASS_JSONCLASS = kotlin(
+        """
+        package com.squareup.moshi
+        annotation class JsonClass(generateAdapter: Boolean = false)
+        """
+    )
+
+    val CONVERTER_ANNOTATIONS = kotlin(
+     """
+            package com.kpstv.bindings
+            
+            import com.kpstv.bindings.ConverterType
+            
+            @Target(AnnotationTarget.CLASS)
+            @Retention(AnnotationRetention.SOURCE)
+            annotation class AutoGenerateConverter(val using: ConverterType)
+     """
+    ).indented()
+
+    val LISTCONVERTER_ANNOTATIONS = kotlin(
+        """
+            package com.kpstv.bindings
+            
+            import com.kpstv.bindings.ConverterType
+            
+            @Target(AnnotationTarget.CLASS)
+            @Retention(AnnotationRetention.SOURCE)
+            annotation class AutoGenerateListConverter(val using: ConverterType)
         """
     ).indented()
 }

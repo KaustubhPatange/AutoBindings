@@ -11,8 +11,6 @@ object TypeConverterGenerator {
         val parameterizedTypeName = ParameterizedTypeName.get(Consts.CLASSNAME_LIST, originalClassName)
         val parameter = if (!isListConverter) originalClassName.simpleName() else "List<${originalClassName.simpleName()}>"
 
-        val typeClass = if (!isListConverter) originalClassName.canonicalName() else "List"
-
         val toMethodCode = CodeBlock.builder()
             .addStatement("if (${Consts.converterName} == null) return null")
 
@@ -57,7 +55,6 @@ object TypeConverterGenerator {
             ConverterType.KOTLIN_SERIALIZATION -> {
                 /**
                  * Class requires @Serializable annotation
-                 * Reflection.typeOf(List.class, KTypeProjection.Companion.invariant(Reflection.typeOf(Data.class)))
                  */
                 val reflectionType = if (!isListConverter)
                     CodeBlock.builder().add("\$T.typeOf(\$T.class))", Consts.CLASSNAME_KX_REFLECTION, originalClassName).build()

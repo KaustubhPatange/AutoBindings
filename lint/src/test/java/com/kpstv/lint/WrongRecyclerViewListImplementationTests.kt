@@ -13,7 +13,7 @@ class WrongRecyclerViewListImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.RecyclerViewListAdapter
+                import com.kpstv.bindings.RecyclerViewListAdapter
 
                 @RecyclerViewListAdapter
                 class TestAdapter {
@@ -27,7 +27,7 @@ class WrongRecyclerViewListImplementationTests {
             .run()
             .expect(
                 """
-                src/com/kpstv/lint/TestAdapter.kt:6: Error: @DiffContentSame method is not implemented. [noDiffItemSameCallback]
+                src/com/kpstv/lint/TestAdapter.kt:6: Error: @DiffContentSame method is not implemented. [noDiffContentSameCallback]
                 class TestAdapter {
                       ~~~~~~~~~~~
                 src/com/kpstv/lint/TestAdapter.kt:6: Error: @DiffItemSame method is not implemented. [noDiffItemSameCallback]
@@ -44,9 +44,9 @@ class WrongRecyclerViewListImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.DiffItemSame
-                import com.kpstv.library_annotations.DiffContentSame
-                import com.kpstv.library_annotations.RecyclerViewListAdapter
+                import com.kpstv.bindings.DiffItemSame
+                import com.kpstv.bindings.DiffContentSame
+                import com.kpstv.bindings.RecyclerViewListAdapter
 
                 @RecyclerViewListAdapter
                 class TestAdapter {

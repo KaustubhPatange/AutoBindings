@@ -13,9 +13,9 @@ class CorrectRecyclerViewListImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.DiffItemSame
-                import com.kpstv.library_annotations.DiffContentSame
-                import com.kpstv.library_annotations.RecyclerViewListAdapter
+                import com.kpstv.bindings.DiffItemSame
+                import com.kpstv.bindings.DiffContentSame
+                import com.kpstv.bindings.RecyclerViewListAdapter
                 import kotlin.reflect.KClass
 
                 @RecyclerViewListAdapter

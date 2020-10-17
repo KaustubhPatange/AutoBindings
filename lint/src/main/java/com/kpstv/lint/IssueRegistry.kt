@@ -4,6 +4,7 @@ import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.android.tools.lint.detector.api.Issue
 import com.kpstv.lint.detectors.RecyclerViewDetector
+import com.kpstv.lint.detectors.TypeConvertDetector
 
 class IssueRegistry : IssueRegistry() {
 
@@ -20,6 +21,8 @@ class IssueRegistry : IssueRegistry() {
             RecyclerViewDetector.ISSUE_INCORRECT_ONCLICK,
             RecyclerViewDetector.ISSUE_INCORRECT_ONLONGCLICK,
             RecyclerViewDetector.ISSUE_NO_DIFFCONTENTSAME,
-            RecyclerViewDetector.ISSUE_INCORRECT_ITEMVIEWTYPE
+            RecyclerViewDetector.ISSUE_INCORRECT_ITEMVIEWTYPE,
+            TypeConvertDetector.ISSUE_NO_SERIALIZABLE,
+            TypeConvertDetector.ISSUE_NO_JSONCLASS
         )
 }

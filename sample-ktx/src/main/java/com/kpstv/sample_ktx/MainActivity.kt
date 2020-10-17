@@ -11,7 +11,6 @@ import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import com.squareup.moshi.JsonClass
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_small_layout.view.*
-import kotlinx.serialization.Serializable
 
 class MainActivity : AppCompatActivity() {
 

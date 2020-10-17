@@ -14,13 +14,13 @@ class CorrectRecyclerViewImplementationTests {
             """
                 package com.kpstv.lint
                 
-                import com.kpstv.library_annotations.RecyclerViewAdapter
-                import com.kpstv.library_annotations.OnBind
+                import com.kpstv.bindings.RecyclerViewAdapter
+                import com.kpstv.bindings.OnBind
                 import kotlin.reflect.KClass
                 import android.view.View
-                import com.kpstv.library_annotations.OnClick
-                import com.kpstv.library_annotations.OnLongClick
-                import com.kpstv.library_annotations.ItemViewType
+                import com.kpstv.bindings.OnClick
+                import com.kpstv.bindings.OnLongClick
+                import com.kpstv.bindings.ItemViewType
                 import android.content.Context
                 data class TestClass(val name: String)
                 @RecyclerViewAdapter(TestClass::class.java)
