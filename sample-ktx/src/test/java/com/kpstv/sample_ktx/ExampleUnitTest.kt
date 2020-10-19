@@ -1,7 +1,7 @@
 package com.kpstv.sample_ktx
 
 import com.google.gson.Gson
-import com.kpstv.bindings.AutoBinding
+
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import kotlinx.serialization.encodeToString
@@ -19,7 +19,6 @@ class ExampleUnitTest {
 //    fun addition_isCorrect() {
 //        val user1 = User("John", mapOf(1 to Clip("p1", true), 2 to Clip("p2", false)))
 //        val user2 = User("Amanda", mapOf(3 to Clip("p11", true), 4 to Clip("p22", false)))
-//        val type = AutoBinding.inferType<List<User>>()
 //
 //        //  val type = object : TypeToken<List<User>>() {}.type
 ////        val serializer = kotlinx.serialization.KSerializer()
