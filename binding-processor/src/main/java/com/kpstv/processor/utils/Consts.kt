@@ -7,6 +7,8 @@ object Consts {
     const val holderSuffix = "Holder"
     const val converterSuffix = "Converter"
     const val converterListSuffix = "ListConverter"
+    const val converterMapSuffix = "MapConverter"
+    const val converterPairSuffix = "PairConverter"
 
     const val toConvertMethod = "toStringFrom"
     const val fromConvertMethod = "fromStringTo"
@@ -99,6 +101,16 @@ object Consts {
         "List"
     )
 
+    val CLASSNAME_MAP = ClassName.get(
+        "java.util",
+        "Map"
+    )
+
+    val CLASSNAME_PAIR = ClassName.get(
+        "android.util",
+        "Pair"
+    )
+
     val CLASSNAME_KSERIALIZER = ClassName.get(
         "kotlinx.serialization",
         "KSerializer"
@@ -127,5 +139,10 @@ object Consts {
     val CLASSNAME_KTYPE_PROJECTION = ClassName.get(
         "kotlin.reflect",
         "KTypeProjection"
+    )
+
+    val CLASSNAME_AUTOBINDINGS = ClassName.get(
+        "com.kpstv.bindings",
+        "AutoBinding"
     )
 }

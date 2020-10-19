@@ -11,6 +11,7 @@ import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import com.squareup.moshi.JsonClass
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_small_layout.view.*
+import kotlinx.serialization.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,15 +33,29 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@JsonClass(generateAdapter = true)
+data class Clip(val p1: String, val p2: Boolean)
+
+@JsonClass(generateAdapter = true)
+data class User(val name: String, val map: Map<Int, Clip>)
+
 /**
  * POJO class
  */
+//@AutoGenerateSQLDelightAdapter(
+//    name = "dataAdapter",
+//    data = Data::class,
+//    using = ConverterType.GSON
+//)
+@Serializable
+@JsonClass(generateAdapter = true)
+@AutoGeneratePairConverter(keyClass = String::class, using = ConverterType.MOSHI)
 data class Data(val name: String, val visible: Boolean = true)
 
 /**
  * An example of using RecyclerView's modern ListAdapter
  */
-@RecyclerViewListAdapter
+@RecyclerViewListAdapter(dataSetType = Data::class)
 class TestAdapter {
 
     @DiffContentSame

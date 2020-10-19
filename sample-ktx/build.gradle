@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlinx-serialization'
+apply plugin: 'com.squareup.sqldelight'
 
 android {
     compileSdkVersion 30
@@ -58,15 +59,21 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.2.0-beta01'
 
+    // Custom Serializers (for testing)
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0"
     implementation "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
     implementation 'com.google.code.gson:gson:2.8.6'
 
+    // SQLDelight Driver (for testing)
+    implementation "com.squareup.sqldelight:android-driver:1.4.3"
+
+    // Room (for testing)
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
+    // AutoBindings
     implementation project (":autobindings")
     kapt project (":autobindings-compiler")
 

@@ -2,6 +2,8 @@ package com.kpstv.processor
 
 import com.kpstv.bindings.*
 import com.kpstv.processor.generators.*
+import com.kpstv.processor.generators.auto.TypeConverterProcessor
+import com.kpstv.processor.utils.AutoGeneratorDataType
 import com.kpstv.processor.utils.Consts
 import com.kpstv.processor.utils.Utils
 import com.kpstv.processor.utils.getAnnotationClassValue
@@ -11,11 +13,15 @@ import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
-
+import kotlin.reflect.KClass
 
 @SupportedAnnotationTypes(
+    "com.kpstv.bindings.AutoGenerateSQLDelightAdapter",
     "com.kpstv.bindings.AutoGenerateConverter",
+    "com.kpstv.bindings.AutoGenerateMapConverter",
+    "com.kpstv.bindings.AutoGeneratePairConverter",
     "com.kpstv.bindings.AutoGenerateListConverter",
     "com.kpstv.bindings.RecyclerViewAdapter",
     "com.kpstv.bindings.RecyclerViewListAdapter"
@@ -41,29 +47,47 @@ class BindingProcessor : AbstractProcessor() {
             env?.getElementsAnnotatedWith(AutoGenerateListConverter::class.java)
         val listTypes = ElementFilter.typesIn(autoGenerateListAnnotationTypes).toMutableList()
 
+        val autoGenerateMapAnnotationTypes =
+            env?.getElementsAnnotatedWith(AutoGenerateMapConverter::class.java)
+        val mapTypes = ElementFilter.typesIn(autoGenerateMapAnnotationTypes).toMutableList()
+
+        val autoGeneratePairAnnotationTypes =
+            env?.getElementsAnnotatedWith(AutoGeneratePairConverter::class.java)
+        val pairTypes = ElementFilter.typesIn(autoGeneratePairAnnotationTypes).toMutableList()
+
         normalTypes.forEach { typeElement ->
             val annotationAttributes = typeElement.getAnnotation(AutoGenerateConverter::class.java)
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, false)
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.DATA)
         }
         listTypes.forEach { typeElement ->
             val annotationAttributes = typeElement.getAnnotation(AutoGenerateListConverter::class.java)
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, true)
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.LIST)
+        }
+        mapTypes.forEach { typeElement ->
+            val annotationAttributes = typeElement.getAnnotation(AutoGenerateMapConverter::class.java)
+            val mapValue = typeElement.getAnnotationClassValue<AutoGenerateMapConverter> { annotationAttributes.keyClass }
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.MAP, TypeName.get(mapValue))
+        }
+        pairTypes.forEach { typeElement ->
+            val annotationAttributes = typeElement.getAnnotation(AutoGeneratePairConverter::class.java)
+            val mapValue = typeElement.getAnnotationClassValue<AutoGeneratePairConverter> { annotationAttributes.keyClass }
+            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.PAIR, TypeName.get(mapValue))
         }
     }
 
-    private fun commonParseConverterAnnotation(typeElement: TypeElement, using: ConverterType, isListConverter: Boolean) {
+    private fun commonParseConverterAnnotation(typeElement: TypeElement, using: ConverterType, generatorDataType: AutoGeneratorDataType, secondClass: TypeName? = null) {
         val packageName =
             processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
 
         val typeName = typeElement.simpleName.toString()
-
         val originalClassName = ClassName.get(packageName, typeName)
 
-        val generatedClassName = ClassName.get(packageName, typeName + if (!isListConverter) Consts.converterSuffix else Consts.converterListSuffix)
+        val generatedClassName = ClassName.get(packageName, typeName + Utils.getAppropriateSuffix(generatorDataType))
 
         val converterBuilder = TypeSpec.classBuilder(generatedClassName)
             .addModifiers(Modifier.PUBLIC)
-            .also { TypeConverterGenerator.create(it, using, originalClassName, isListConverter) }
+            .also { TypeConverterProcessor(it, using, generatorDataType, originalClassName, secondClass).create() }
+//            .also { TypeConverterGenerator.create(it, using, originalClassName, true) }
 
         Utils.write(packageName, converterBuilder.build(), typeElement, processingEnv)
     }

@@ -50,6 +50,15 @@ object Utils {
         }
     }
 
+    fun getAppropriateSuffix(dataType: AutoGeneratorDataType): String {
+        return when(dataType) {
+            AutoGeneratorDataType.DATA -> Consts.converterSuffix
+            AutoGeneratorDataType.LIST -> Consts.converterListSuffix
+            AutoGeneratorDataType.MAP -> Consts.converterMapSuffix
+            AutoGeneratorDataType.PAIR -> Consts.converterPairSuffix
+        }
+    }
+
     fun prepareJavaModelName(data: String): String {
         return if (data.contains("\\.")) {
             data.split(".").joinToString { getJavaModelName(it) }

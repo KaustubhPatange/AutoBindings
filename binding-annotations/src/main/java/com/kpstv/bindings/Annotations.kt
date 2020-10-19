@@ -25,12 +25,3 @@ annotation class OnBind(@LayoutRes val layoutId: Int, val viewType: Int = 0)
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ItemViewType
-
-/*
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class BindVisibilityArray(vararg val bindVisibility: BindVisibility)
-
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class BindVisibility(@IdRes val itemId: Int, val predicate: String, val visibility: Int)*/
