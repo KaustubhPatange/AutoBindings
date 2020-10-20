@@ -2,13 +2,16 @@ package com.kpstv.processor.abstract
 
 import com.kpstv.bindings.ConverterType
 import com.kpstv.processor.utils.AutoGeneratorDataType
+import com.kpstv.processor.utils.AutoGeneratorType
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.*
 import java.io.IOException
 
 abstract class BaseAutoGenerator {
 
-    protected abstract val converterType: ConverterType
+    protected abstract val converterType: AutoGeneratorType
+
+    protected abstract val serializerType: ConverterType
 
     protected abstract val baseDataType: TypeName
 
@@ -16,9 +19,9 @@ abstract class BaseAutoGenerator {
 
     protected abstract val typeSpecBuilder: TypeSpec.Builder
 
-    protected abstract fun decodeBuilder(): MethodSpec.Builder
-
     protected abstract fun encodeBuilder(): MethodSpec.Builder
+
+    protected abstract fun decodeBuilder(): MethodSpec.Builder
 
     fun create() {
         val toMethodCode = CodeBlock.builder()
@@ -27,7 +30,7 @@ abstract class BaseAutoGenerator {
         val fromMethodCode = CodeBlock.builder()
             .addStatement("if (${Consts.converterName} == null) return null")
 
-        when(converterType) {
+        when(serializerType) {
             ConverterType.GSON -> {
                 val typeStatement = CodeBlock.builder()
                     .addStatement("\$T type = new \$T<\$T>(){}.getType()", Consts.CLASSNAME_TYPE, Consts.CLASSNAME_TYPETOKEN, baseDataType)

@@ -10,6 +10,11 @@ object Consts {
     const val converterMapSuffix = "MapConverter"
     const val converterPairSuffix = "PairConverter"
 
+    const val adapterSuffix = "Adapter"
+    const val adapterListSuffix = "ListAdapter"
+    const val adapterMapSuffix = "MapAdapter"
+    const val adapterPairSuffix = "PairAdapter"
+
     const val toConvertMethod = "toStringFrom"
     const val fromConvertMethod = "fromStringTo"
 
@@ -19,6 +24,15 @@ object Consts {
     const val position = "position"
     const val holder = "holder"
     const val converterName = "model"
+    const val decodeMethod = "decode"
+    const val encodeMethod = "encode"
+
+    const val adapter = "adapter"
+
+    val GENERATED_SQLDELIGHTADAPTER = ClassName.get(
+        "com.kpstv.autobindings",
+        "SQLDelightAdapters"
+    )
 
     val CLASSNAME_LISTADAPTER = ClassName.get(
         "androidx.recyclerview.widget",
@@ -141,8 +155,8 @@ object Consts {
         "KTypeProjection"
     )
 
-    val CLASSNAME_AUTOBINDINGS = ClassName.get(
-        "com.kpstv.bindings",
-        "AutoBinding"
+    val CLASSNAME_COLUMNADAPTER = ClassName.get(
+        "com.squareup.sqldelight",
+        "ColumnAdapter"
     )
 }

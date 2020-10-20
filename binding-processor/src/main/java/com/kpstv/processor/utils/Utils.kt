@@ -3,18 +3,23 @@ package com.kpstv.processor.utils
 import com.kpstv.bindings.ImageTransformationType
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeSpec
+import java.io.File
 import java.io.IOException
 import java.lang.StringBuilder
+import java.nio.file.FileAlreadyExistsException
+import javax.annotation.processing.FilerException
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
+import javax.tools.JavaFileManager
+import javax.tools.StandardLocation
 
 object Utils {
     fun write(
         packageName: String,
         typeSpec: TypeSpec,
-        typeElement: TypeElement,
-        processingEnv: ProcessingEnvironment
+        processingEnv: ProcessingEnvironment,
+        typeElement: TypeElement? = null
     ) {
         try {
             JavaFile.builder(
@@ -23,6 +28,11 @@ object Utils {
             )
                 .build()
                 .writeTo(processingEnv.filer)
+        } catch (e: FilerException) {
+            processingEnv.messager.printMessage(
+                Diagnostic.Kind.ERROR,
+                e.toString()
+            )
         } catch (e: IOException) {
             processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
@@ -56,6 +66,15 @@ object Utils {
             AutoGeneratorDataType.LIST -> Consts.converterListSuffix
             AutoGeneratorDataType.MAP -> Consts.converterMapSuffix
             AutoGeneratorDataType.PAIR -> Consts.converterPairSuffix
+        }
+    }
+
+    fun getAppropriateDelightSuffix(dataType: AutoGeneratorDataType): String {
+        return when(dataType) {
+            AutoGeneratorDataType.DATA -> Consts.adapterSuffix
+            AutoGeneratorDataType.LIST -> Consts.adapterListSuffix
+            AutoGeneratorDataType.MAP -> Consts.adapterMapSuffix
+            AutoGeneratorDataType.PAIR -> Consts.adapterPairSuffix
         }
     }
 

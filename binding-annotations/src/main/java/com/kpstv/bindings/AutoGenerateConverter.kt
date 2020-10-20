@@ -44,10 +44,29 @@ annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: C
 // TODO: Add a javaDoc
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class AutoGenerateSQLDelightAdapter(
+annotation class AutoGenerateSQLDelightAdapters(
+    val using: ConverterType,
+    val adapters: Array<SQLDelightAdapter> = [],
+    val listAdapters: Array<SQLDelightAdapter> = [],
+    val mapAdapters: Array<SQLDelight2DAdapter> = [],
+    val pairAdapters: Array<SQLDelight2DAdapter> = []
+)
+
+// TODO: Add a javaDoc
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class SQLDelightAdapter(
     val name: String,
-    val data: KClass<*>,
-    val using: ConverterType
+    val source: KClass<*>
+)
+
+// TODO: Add a javaDoc
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class SQLDelight2DAdapter(
+    val name: String,
+    val keySource: KClass<*>,
+    val valueSource: KClass<*>,
 )
 
 enum class ConverterType {

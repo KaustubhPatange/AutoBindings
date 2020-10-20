@@ -3,17 +3,20 @@ package com.kpstv.processor.generators.auto
 import com.kpstv.bindings.ConverterType
 import com.kpstv.processor.abstract.BaseAutoGenerator
 import com.kpstv.processor.utils.AutoGeneratorDataType
+import com.kpstv.processor.utils.AutoGeneratorType
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class TypeConverterProcessor(
     override val typeSpecBuilder: TypeSpec.Builder,
-    override val converterType: ConverterType,
+    override val serializerType: ConverterType,
     override val generatorDataType: AutoGeneratorDataType,
     private val firstClassType: ClassName,
     secondClassType: TypeName? = null
 ) : BaseAutoGenerator() {
+
+    override val converterType = AutoGeneratorType.ROOM
 
     override val baseDataType: TypeName = when(generatorDataType) {
         AutoGeneratorDataType.DATA -> firstClassType

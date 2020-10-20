@@ -1,5 +1,6 @@
 package com.kpstv.processor.utils
 
+import com.squareup.javapoet.TypeName
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.type.MirroredTypeException
@@ -22,3 +23,8 @@ inline fun <reified T : Annotation> Element.getAnnotationClassValue(f: T.() -> K
     } catch (e: MirroredTypeException) {
         e.typeMirror
     }
+
+
+fun TypeName.simpleName() = toString().substring(toString().lastIndexOf(".") + 1)
+
+fun TypeMirror.toType() = TypeName.get(this)
