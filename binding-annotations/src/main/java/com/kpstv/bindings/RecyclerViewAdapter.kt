@@ -18,4 +18,4 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class RecyclerViewAdapter(val dataSetType: KClass<*> = Any::class)
+annotation class RecyclerViewAdapter(val dataSetType: KClass<*>)

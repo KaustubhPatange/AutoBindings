@@ -42,25 +42,20 @@ data class User(val name: String, val map: Map<Int, Clip>)
 /**
  * POJO class
  */
-//@AutoGenerateSQLDelightAdapter(
-//    name = "dataAdapter",
-//    data = Data::class,
-//    using = ConverterType.GSON
-//)
 @Serializable
 @JsonClass(generateAdapter = true)
 @AutoGeneratePairConverter(keyClass = String::class, using = ConverterType.MOSHI)
 @AutoGenerateSQLDelightAdapters(
     using = ConverterType.KOTLIN_SERIALIZATION,
     adapters = [
-        SQLDelightAdapter(name = "visibility", source = Data::class),
-        SQLDelightAdapter(name = "clip", source = User::class),
+        ColumnAdapter(name = "visibility", source = Data::class),
+        ColumnAdapter(name = "clip", source = User::class),
     ],
     listAdapters = [
-        SQLDelightAdapter(name = "string", source = String::class)
+        ColumnAdapter(name = "string", source = String::class)
     ],
     mapAdapters = [
-        SQLDelight2DAdapter(name = "main", keySource = String::class, valueSource = User::class)
+        Column2DAdapter(name = "main", keySource = String::class, valueSource = User::class)
     ]
 )
 data class Data(val name: String, val visible: Boolean = true)

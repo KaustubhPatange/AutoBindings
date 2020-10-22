@@ -24,7 +24,6 @@ inline fun <reified T : Annotation> Element.getAnnotationClassValue(f: T.() -> K
         e.typeMirror
     }
 
-
 fun TypeName.simpleName() = toString().substring(toString().lastIndexOf(".") + 1)
 
 fun TypeMirror.toType() = TypeName.get(this)

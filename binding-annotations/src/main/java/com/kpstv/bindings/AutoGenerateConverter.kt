@@ -1,6 +1,5 @@
 package com.kpstv.bindings
 
-import androidx.annotation.VisibleForTesting
 import kotlin.reflect.KClass
 
 /**
@@ -41,29 +40,38 @@ annotation class AutoGenerateMapConverter(val keyClass: KClass<*>, val using: Co
 @Retention(AnnotationRetention.SOURCE)
 annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: ConverterType)
 
-// TODO: Add a javaDoc
+/**
+ * Automatically generate [ColumnAdapter] for SQLDelight.
+ *
+ * @see <a href="https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation">Documentation</a>
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class AutoGenerateSQLDelightAdapters(
     val using: ConverterType,
-    val adapters: Array<SQLDelightAdapter> = [],
-    val listAdapters: Array<SQLDelightAdapter> = [],
-    val mapAdapters: Array<SQLDelight2DAdapter> = [],
-    val pairAdapters: Array<SQLDelight2DAdapter> = []
+    val adapters: Array<ColumnAdapter> = [],
+    val listAdapters: Array<ColumnAdapter> = [],
+    val mapAdapters: Array<Column2DAdapter> = [],
+    val pairAdapters: Array<Column2DAdapter> = []
 )
 
-// TODO: Add a javaDoc
+/**
+ * Creates a [ColumnAdapter] for the [source]
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class SQLDelightAdapter(
+annotation class ColumnAdapter(
     val name: String,
     val source: KClass<*>
 )
 
-// TODO: Add a javaDoc
+/**
+ * Creates a 2D [ColumnAdapter] based on [keySource] & [valueSource]
+ * Typically used to create Map, Pair Adapters
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class SQLDelight2DAdapter(
+annotation class Column2DAdapter(
     val name: String,
     val keySource: KClass<*>,
     val valueSource: KClass<*>,
