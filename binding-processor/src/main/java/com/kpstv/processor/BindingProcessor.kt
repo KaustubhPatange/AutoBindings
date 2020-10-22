@@ -12,6 +12,7 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
+import javax.tools.Diagnostic
 
 class BindingProcessor : AbstractProcessor() {
 

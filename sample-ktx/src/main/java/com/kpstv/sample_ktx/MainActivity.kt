@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.autobindings.SQLDelightAdapters
 import com.kpstv.bindings.*
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import com.squareup.moshi.JsonClass
@@ -45,19 +46,6 @@ data class User(val name: String, val map: Map<Int, Clip>)
 @Serializable
 @JsonClass(generateAdapter = true)
 @AutoGeneratePairConverter(keyClass = String::class, using = ConverterType.MOSHI)
-@AutoGenerateSQLDelightAdapters(
-    using = ConverterType.KOTLIN_SERIALIZATION,
-    adapters = [
-        ColumnAdapter(name = "visibility", source = Data::class),
-        ColumnAdapter(name = "clip", source = User::class),
-    ],
-    listAdapters = [
-        ColumnAdapter(name = "string", source = String::class)
-    ],
-    mapAdapters = [
-        Column2DAdapter(name = "main", keySource = String::class, valueSource = User::class)
-    ]
-)
 data class Data(val name: String, val visible: Boolean = true)
 
 /**
