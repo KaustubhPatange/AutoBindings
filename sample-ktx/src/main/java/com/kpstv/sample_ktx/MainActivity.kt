@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.autobindings.SQLDelightAdapters
 import com.kpstv.bindings.*
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
 import com.squareup.moshi.JsonClass

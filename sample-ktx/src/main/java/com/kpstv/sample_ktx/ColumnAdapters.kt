@@ -1,22 +1,14 @@
 package com.kpstv.sample_ktx
 
-import com.kpstv.bindings.AutoGenerateSQLDelightAdapters
-import com.kpstv.bindings.Column2DAdapter
-import com.kpstv.bindings.ColumnAdapter
-import com.kpstv.bindings.ConverterType
+import com.kpstv.bindings.*
+import com.squareup.sqldelight.ColumnAdapter
 
-@AutoGenerateSQLDelightAdapters(
-    using = ConverterType.KOTLIN_SERIALIZATION,
-    adapters = [
-        ColumnAdapter(name = "visibility", source = Data::class),
-        ColumnAdapter(name = "clip", source = User::class),
-    ],
-    listAdapters = [
-        ColumnAdapter(name = "string", source = String::class)
-    ],
-    mapAdapters = [
-        Column2DAdapter(name = "main", keySource = String::class, valueSource = User::class)
-    ]
-)
-@Suppress("unused")
-class ColumnAdapters
+@AutoGenerateSQLDelightAdapters(using = ConverterType.KOTLIN_SERIALIZATION)
+interface SQLDelightAdapters {
+    @SQLDelightAdapter
+    fun dataConverter(): ColumnAdapter<Data, String>
+    @SQLDelightAdapter
+    fun dataListConverter(): ColumnAdapter<List<Data>, String>
+    @SQLDelightAdapter
+    fun dataMapConverter(): ColumnAdapter<Map<String, Data>, String>
+}

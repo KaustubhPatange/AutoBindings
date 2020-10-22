@@ -1,7 +1,6 @@
 package com.kpstv.processor.abstract
 
 import com.kpstv.bindings.ConverterType
-import com.kpstv.processor.utils.AutoGeneratorDataType
 import com.kpstv.processor.utils.AutoGeneratorType
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.*
@@ -14,8 +13,6 @@ abstract class BaseAutoGenerator {
     protected abstract val serializerType: ConverterType
 
     protected abstract val baseDataType: TypeName
-
-    protected abstract val generatorDataType: AutoGeneratorDataType
 
     protected abstract val typeSpecBuilder: TypeSpec.Builder
 

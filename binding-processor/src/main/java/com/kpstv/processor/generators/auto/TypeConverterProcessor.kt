@@ -11,8 +11,8 @@ import javax.lang.model.element.Modifier
 class TypeConverterProcessor(
     override val typeSpecBuilder: TypeSpec.Builder,
     override val serializerType: ConverterType,
-    override val generatorDataType: AutoGeneratorDataType,
     private val firstClassType: ClassName,
+    generatorDataType: AutoGeneratorDataType,
     secondClassType: TypeName? = null
 ) : BaseAutoGenerator() {
 

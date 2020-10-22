@@ -9,6 +9,7 @@ import com.squareup.javapoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
@@ -32,7 +33,10 @@ class BindingProcessor : AbstractProcessor() {
         return SourceVersion.latestSupported()
     }
 
-    override fun process(annotations: MutableSet<out TypeElement>?, env: RoundEnvironment?): Boolean {
+    override fun process(
+        annotations: MutableSet<out TypeElement>?,
+        env: RoundEnvironment?,
+    ): Boolean {
         parseRecyclerViewAnnotation(env)
         parseRecyclerViewListAnnotation(env)
         parseAutoGenerateAnnotations(env)
@@ -43,50 +47,53 @@ class BindingProcessor : AbstractProcessor() {
     private fun parseAutoGenerateSQLDelightAnnotations(env: RoundEnvironment?) {
         val autoGenerateSQLDelightAnnotationTypes =
             env?.getElementsAnnotatedWith(AutoGenerateSQLDelightAdapters::class.java)
-        val elements= ElementFilter.typesIn(autoGenerateSQLDelightAnnotationTypes).toMutableList()
+        val elements = ElementFilter.typesIn(autoGenerateSQLDelightAnnotationTypes).toMutableList()
         elements.forEach { typeElement ->
-            val adapterBuilder = TypeSpec.classBuilder(Consts.GENERATED_SQLDELIGHTADAPTER)
+
+            if (!typeElement.modifiers.contains(Modifier.ABSTRACT))
+                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${typeElement.simpleName}: must be interface")
+
+            val packageName = processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
+            val originalClassName = ClassName.get(packageName, typeElement.simpleName.toString())
+            val generatedClassName = ClassName.get(packageName, typeElement.simpleName.toString() + "Impl")
+
+            val adapterBuilder = TypeSpec.classBuilder(generatedClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            val annotationAttributes = typeElement.getAnnotation(AutoGenerateSQLDelightAdapters::class.java)
-            annotationAttributes.adapters.forEach { adapterAnnotation ->
-                val mainClass =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.source }?.toType()!!
-                commonProcessSQLDelightAdapters(adapterBuilder, adapterAnnotation.name, mainClass, annotationAttributes.using, AutoGeneratorDataType.DATA)
-            }
-            annotationAttributes.listAdapters.forEach { adapterAnnotation ->
-                val mainClass =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.source }?.toType()!!
-                commonProcessSQLDelightAdapters(adapterBuilder, adapterAnnotation.name, mainClass, annotationAttributes.using, AutoGeneratorDataType.LIST)
-            }
-            annotationAttributes.mapAdapters.forEach { adapterAnnotation ->
-                val firstSource =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.keySource }?.toType()!!
-                val secondSource =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.valueSource }?.toType()!!
-                commonProcessSQLDelightAdapters(adapterBuilder, adapterAnnotation.name, secondSource, annotationAttributes.using, AutoGeneratorDataType.MAP, firstSource)
-            }
-            annotationAttributes.pairAdapters.forEach { adapterAnnotation ->
-                val firstSource =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.keySource }?.toType()!!
-                val secondSource =
-                    typeElement.getAnnotationClassValue<AutoGenerateSQLDelightAdapters> { adapterAnnotation.valueSource }?.toType()!!
-                commonProcessSQLDelightAdapters(adapterBuilder, adapterAnnotation.name, secondSource, annotationAttributes.using, AutoGeneratorDataType.PAIR, firstSource)
+                .addSuperinterface(originalClassName)
+                .addField(
+                    FieldSpec.builder(generatedClassName, "Instance", Modifier.PRIVATE, Modifier.STATIC)
+                        .initializer("new \$T()", generatedClassName).build()
+                )
+
+            val serializerType = typeElement.getAnnotation(AutoGenerateSQLDelightAdapters::class.java).using
+
+            typeElement.enclosedElements.forEach enclosed@{ enclosedElement ->
+                val executableElement = enclosedElement as ExecutableElement
+                val returnType = ParameterizedTypeName.get(executableElement.returnType) as ParameterizedTypeName
+
+                val baseType = returnType.typeArguments[0]
+                val toType = returnType.typeArguments[1]
+                if (toType.simpleName() != "String") {
+                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${executableElement.simpleName}: Return type must be ColumnAdapter<*, String>")
+                    return@enclosed
+                }
+
+                adapterBuilder.addMethod(
+                    SQLDelightAdapterProcessor(
+                        adapterName = enclosedElement.simpleName.toString(),
+                        serializerType = serializerType,
+                        baseDataType = baseType
+                    ).generateMethod()
+                )
+                adapterBuilder.addField(
+                    FieldSpec.builder(returnType, enclosedElement.simpleName.toString(), Modifier.PUBLIC, Modifier.STATIC)
+                        .initializer("Instance.${enclosedElement.simpleName}()")
+                        .build()
+                )
             }
 
-            Utils.write(Consts.GENERATED_SQLDELIGHTADAPTER.packageName(), adapterBuilder.build(), processingEnv)
+            Utils.write(packageName, adapterBuilder.build(), processingEnv)
         }
-    }
-
-    private fun commonProcessSQLDelightAdapters(adapterBuilder: TypeSpec.Builder, adapterName: String, firstClass: TypeName,
-                                                serializerType: ConverterType, generatorDataType: AutoGeneratorDataType, secondClass: TypeName? = null) {
-        val fieldSpec = SQLDelightAdapterProcessor(
-            adapterName = adapterName + firstClass.simpleName() + (secondClass?.simpleName() ?: "") + Utils.getAppropriateDelightSuffix(generatorDataType),
-            generatorDataType = generatorDataType,
-            serializerType = serializerType,
-            firstClassType = firstClass,
-            secondClassType = secondClass
-        ).generateField()
-        adapterBuilder.addField(fieldSpec)
     }
 
     private fun parseAutoGenerateAnnotations(env: RoundEnvironment?) {
@@ -108,26 +115,36 @@ class BindingProcessor : AbstractProcessor() {
 
         normalTypes.forEach { typeElement ->
             val annotationAttributes = typeElement.getAnnotation(AutoGenerateConverter::class.java)
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.DATA)
+            commonParseConverterAnnotation(typeElement,
+                annotationAttributes.using,
+                AutoGeneratorDataType.DATA)
         }
         listTypes.forEach { typeElement ->
             val annotationAttributes =
                 typeElement.getAnnotation(AutoGenerateListConverter::class.java)
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.LIST)
+            commonParseConverterAnnotation(typeElement,
+                annotationAttributes.using,
+                AutoGeneratorDataType.LIST)
         }
         mapTypes.forEach { typeElement ->
             val annotationAttributes =
                 typeElement.getAnnotation(AutoGenerateMapConverter::class.java)
             val mapValue =
                 typeElement.getAnnotationClassValue<AutoGenerateMapConverter> { annotationAttributes.keyClass }
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.MAP, TypeName.get(mapValue))
+            commonParseConverterAnnotation(typeElement,
+                annotationAttributes.using,
+                AutoGeneratorDataType.MAP,
+                TypeName.get(mapValue))
         }
         pairTypes.forEach { typeElement ->
             val annotationAttributes =
                 typeElement.getAnnotation(AutoGeneratePairConverter::class.java)
             val mapValue =
                 typeElement.getAnnotationClassValue<AutoGeneratePairConverter> { annotationAttributes.keyClass }
-            commonParseConverterAnnotation(typeElement, annotationAttributes.using, AutoGeneratorDataType.PAIR, TypeName.get(mapValue))
+            commonParseConverterAnnotation(typeElement,
+                annotationAttributes.using,
+                AutoGeneratorDataType.PAIR,
+                TypeName.get(mapValue))
         }
     }
 
@@ -149,11 +166,13 @@ class BindingProcessor : AbstractProcessor() {
         val converterBuilder = TypeSpec.classBuilder(generatedClassName)
             .addModifiers(Modifier.PUBLIC)
             .also {
-                TypeConverterProcessor(it,
-                    using,
-                    generatorDataType,
-                    originalClassName,
-                    secondClass).create()
+                TypeConverterProcessor(
+                    typeSpecBuilder = it,
+                    serializerType = using,
+                    generatorDataType = generatorDataType,
+                    firstClassType = originalClassName,
+                    secondClassType = secondClass
+                ).create()
             }
 
         Utils.write(packageName, converterBuilder.build(), processingEnv, typeElement)

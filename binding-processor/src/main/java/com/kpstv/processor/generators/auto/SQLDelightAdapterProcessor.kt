@@ -3,7 +3,6 @@ package com.kpstv.processor.generators.auto
 import androidx.annotation.NonNull
 import com.kpstv.bindings.ConverterType
 import com.kpstv.processor.abstract.BaseAutoGenerator
-import com.kpstv.processor.utils.AutoGeneratorDataType
 import com.kpstv.processor.utils.AutoGeneratorType
 import com.kpstv.processor.utils.Consts
 import com.squareup.javapoet.*
@@ -11,20 +10,11 @@ import javax.lang.model.element.Modifier
 
 class SQLDelightAdapterProcessor(
     override val serializerType: ConverterType,
-    override val generatorDataType: AutoGeneratorDataType,
     private val adapterName: String,
-    firstClassType: TypeName,
-    secondClassType: TypeName? = null,
+    override val baseDataType: TypeName,
 ) : BaseAutoGenerator() {
 
     override val converterType = AutoGeneratorType.SQLDelight
-
-    override val baseDataType: TypeName = when (generatorDataType) {
-        AutoGeneratorDataType.DATA -> firstClassType
-        AutoGeneratorDataType.LIST -> ParameterizedTypeName.get(Consts.CLASSNAME_LIST, firstClassType)
-        AutoGeneratorDataType.MAP -> ParameterizedTypeName.get(Consts.CLASSNAME_MAP, secondClassType, firstClassType)
-        AutoGeneratorDataType.PAIR -> ParameterizedTypeName.get(Consts.CLASSNAME_PAIR, secondClassType, firstClassType)
-    }
 
     private val parameterizedType =
         ParameterizedTypeName.get(Consts.CLASSNAME_COLUMNADAPTER, baseDataType, ClassName.get(String::class.java))
@@ -50,10 +40,14 @@ class SQLDelightAdapterProcessor(
             .returns(baseDataType)
     }
 
-    fun generateField(): FieldSpec {
+    fun generateMethod(): MethodSpec {
         create()
-        return FieldSpec.builder(parameterizedType, adapterName, Modifier.PUBLIC, Modifier.STATIC)
-            .initializer("\$L", typeSpecBuilder.build())
+        return MethodSpec.methodBuilder(adapterName)
+            .addModifiers(Modifier.PUBLIC)
+            .returns(parameterizedType)
+            .addAnnotation(Override::class.java)
+            .addAnnotation(NonNull::class.java)
+            .addCode("return \$L;", typeSpecBuilder.build())
             .build()
     }
 }

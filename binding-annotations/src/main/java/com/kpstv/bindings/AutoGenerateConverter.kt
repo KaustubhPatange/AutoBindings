@@ -41,37 +41,28 @@ annotation class AutoGenerateMapConverter(val keyClass: KClass<*>, val using: Co
 annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: ConverterType)
 
 /**
- * Automatically generate [ColumnAdapter] for SQLDelight.
+ * Automatically generate [SQLDelightAdapter] for SQLDelight.
  *
  * @see <a href="https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation">Documentation</a>
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class AutoGenerateSQLDelightAdapters(
-    val using: ConverterType,
-    val adapters: Array<ColumnAdapter> = [],
-    val listAdapters: Array<ColumnAdapter> = [],
-    val mapAdapters: Array<Column2DAdapter> = [],
-    val pairAdapters: Array<Column2DAdapter> = []
-)
+annotation class AutoGenerateSQLDelightAdapters(val using: ConverterType)
 
 /**
- * Creates a [ColumnAdapter] for the [source]
+ * Creates a [SQLDelightAdapter] for the [source]
  */
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class ColumnAdapter(
-    val name: String,
-    val source: KClass<*>
-)
+annotation class SQLDelightAdapter
 
 /**
- * Creates a 2D [ColumnAdapter] based on [keySource] & [valueSource]
+ * Creates a 2D [SQLDelightAdapter] based on [keySource] & [valueSource]
  * Typically used to create Map, Pair Adapters
  */
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Column2DAdapter(
+annotation class SQLDelight2DAdapter(
     val name: String,
     val keySource: KClass<*>,
     val valueSource: KClass<*>,
