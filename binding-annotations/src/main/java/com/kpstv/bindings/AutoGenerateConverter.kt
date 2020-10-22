@@ -50,23 +50,11 @@ annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: C
 annotation class AutoGenerateSQLDelightAdapters(val using: ConverterType)
 
 /**
- * Creates a [SQLDelightAdapter] for the [source]
+ * Creates a [SQLDelightAdapter]
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class SQLDelightAdapter
-
-/**
- * Creates a 2D [SQLDelightAdapter] based on [keySource] & [valueSource]
- * Typically used to create Map, Pair Adapters
- */
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-annotation class SQLDelight2DAdapter(
-    val name: String,
-    val keySource: KClass<*>,
-    val valueSource: KClass<*>,
-)
 
 enum class ConverterType {
     GSON, MOSHI, KOTLIN_SERIALIZATION

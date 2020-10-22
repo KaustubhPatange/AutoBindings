@@ -1,0 +1,15 @@
+import kotlin.collections.List;
+
+CREATE TABLE DataDomain (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    imageUrl TEXT NOT NULL,
+    tags TEXT AS List<String> NOT NULL
+);
+
+deleteAll:
+DELETE FROM DataDomain;
+
+insert:
+INSERT INTO DataDomain(name, imageUrl, tags)
+VALUES ?;

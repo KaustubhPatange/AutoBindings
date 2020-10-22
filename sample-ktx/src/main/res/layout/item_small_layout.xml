@@ -29,6 +29,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem" />
 
+    <TextView
+        android:id="@+id/item_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="#2B2B2B"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_small_image"
+        app:layout_constraintTop_toBottomOf="@id/item_title"
+        tools:text="@tools:sample/lorem" />
+
     <View
         app:layout_constraintTop_toBottomOf="@id/item_small_image"
         app:layout_goneMarginTop="10dp"

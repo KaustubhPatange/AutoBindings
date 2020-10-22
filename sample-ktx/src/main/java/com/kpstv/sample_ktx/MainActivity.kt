@@ -8,10 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.bindings.*
 import com.kpstv.sample_ktx.Utils.createRandomImageUrl
-import com.squareup.moshi.JsonClass
+import com.kpstv.sample_ktx.Utils.createRandomTag
+import com.kpstv.sample_ktx.data.Data
+import com.kpstv.sample_ktx.data.mapToDomain
+import com.kpstv.sample_ktx.databinding.ItemSmallLayoutBinding
+import com.kpstv.samplektx.data.DataDomain
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_small_layout.view.*
-import kotlinx.serialization.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,33 +23,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /**
+         * IRW, you should inject database using a dependency injection framework to avoid recreating of database.
+         */
+        val driver: SqlDriver = AndroidSqliteDriver(Database.Schema, this, "data.db")
+        val database = Database(driver, DataDomainAdapter = DataDomain.Adapter(
+            tagsAdapter = SQLDelightAdaptersImpl.tagsConverter
+        ))
+
         val models = listOf(
-            Data(createRandomImageUrl()),
-            Data(createRandomImageUrl()),
-            Data(createRandomImageUrl()),
-            Data(createRandomImageUrl()),
-            Data(createRandomImageUrl()),
-            Data(createRandomImageUrl())
+            Data("Random1", createRandomImageUrl(), createRandomTag()),
+            Data("Random2", createRandomImageUrl(), createRandomTag()),
+            Data("Random3", createRandomImageUrl(), createRandomTag()),
+            Data("Random4", createRandomImageUrl(), createRandomTag()),
+            Data("Random5", createRandomImageUrl(), createRandomTag()),
+            Data("Random6", createRandomImageUrl(), createRandomTag())
         )
+
+        // Deleting all queries to simulate random data generate behaviour
+        database.dataDomainQueries.deleteAll()
+
+        /**
+         * Insert all queries into database. This is to show working of [SQLDelightAdapters.tagsConverter] (if this would've failed then app will crash)
+         * IRW, domain model must be fetched on app launched and should be map into base model class for further use.
+         */
+        models.mapToDomain().forEach {
+            database.dataDomainQueries.insert(it)
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = BindTestAdapter(TestAdapter()).apply { submitList(models) }
     }
 }
-
-@JsonClass(generateAdapter = true)
-data class Clip(val p1: String, val p2: Boolean)
-
-@JsonClass(generateAdapter = true)
-data class User(val name: String, val map: Map<Int, Clip>)
-
-/**
- * POJO class
- */
-@Serializable
-@JsonClass(generateAdapter = true)
-@AutoGeneratePairConverter(keyClass = String::class, using = ConverterType.MOSHI)
-data class Data(val name: String, val visible: Boolean = true)
 
 /**
  * An example of using RecyclerView's modern ListAdapter
@@ -57,18 +66,25 @@ class TestAdapter {
     fun diffContentSame(oldItem: Data, newItemSame: Data) = oldItem == newItemSame
 
     @DiffItemSame
-    fun diffItemSame(oldItem: Data, newItemSame: Data) = oldItem.name == newItemSame.name
+    fun diffItemSame(oldItem: Data, newItemSame: Data) = oldItem.imageUrl == newItemSame.imageUrl
 
     @GlideLoadArray(
-        GlideLoad(R.id.item_small_image, "name", transformationType = ImageTransformationType.CIRCLE_CROP)
+        GlideLoad(R.id.item_small_image,
+            "imageUrl",
+            transformationType = ImageTransformationType.CIRCLE_CROP,
+            errorRes = R.mipmap.ic_launcher)
     )
     @OnBind(R.layout.item_small_layout)
-    fun bind(view: View, item: Data, position: Int) {
-        view.item_title.text = item.name
+    fun bind(view: View, item: Data, position: Int) = with(ItemSmallLayoutBinding.bind(view)) {
+        itemTitle.text = item.name
+        itemTags.text = item.tags.joinToString(", ")
     }
 
     @GlideLoadArray(
-        GlideLoad(R.id.item_big_image, "name", transformationType = ImageTransformationType.CENTER_CROP)
+        GlideLoad(R.id.item_big_image,
+            "imageUrl",
+            transformationType = ImageTransformationType.CENTER_CROP,
+            errorRes = R.mipmap.ic_launcher)
     )
     @OnBind(R.layout.item_big_layout, 2)
     fun bind2(view: View, item: Data, position: Int) {
