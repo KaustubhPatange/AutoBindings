@@ -49,13 +49,6 @@ annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: C
 @Retention(AnnotationRetention.SOURCE)
 annotation class AutoGenerateSQLDelightAdapters(val using: ConverterType)
 
-/**
- * Creates a [SQLDelightAdapter]
- */
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-annotation class SQLDelightAdapter
-
 enum class ConverterType {
     GSON, MOSHI, KOTLIN_SERIALIZATION
 }

@@ -25,6 +25,11 @@ kapt 'io.github.kaustubhpatange:autobindings-compiler:tag'
 annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
 ```
 
+## Resources
+
+- **Medium article(s)**
+  - [Auto-Generate TypeConverters for entity classes: Room](https://medium.com/@developerkp16/auto-generate-typeconverters-for-entity-classes-room-1b40a793c146)
+
 ## License
 
 - [The Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
