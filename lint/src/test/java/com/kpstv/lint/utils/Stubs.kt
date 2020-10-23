@@ -127,6 +127,13 @@ object Stubs {
         """
     )
 
+    val CLASS_COLUMNADAPTER = kotlin(
+     """
+        package com.squareup.sqldelight
+        interface ColumnAdapter<T : Any, S>
+     """
+    ).indented()
+
     val CONVERTER_ANNOTATIONS = kotlin(
      """
             package com.kpstv.bindings
@@ -148,6 +155,17 @@ object Stubs {
             @Target(AnnotationTarget.CLASS)
             @Retention(AnnotationRetention.SOURCE)
             annotation class AutoGenerateListConverter(val using: ConverterType)
+        """
+    ).indented()
+
+    val COLUMNADAPTER_ANNOTATIONS = kotlin(
+        """
+            package com.kpstv.bindings
+            
+            import com.kpstv.bindings.ConverterType
+            
+            @Target(AnnotationTarget.CLASS)
+            annotation class AutoGenerateSQLDelightAdapters(val using: ConverterType)
         """
     ).indented()
 }

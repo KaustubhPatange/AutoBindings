@@ -51,7 +51,7 @@ class BindingProcessor : AbstractProcessor() {
         elements.forEach { typeElement ->
 
             if (!typeElement.modifiers.contains(Modifier.ABSTRACT))
-                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${typeElement.simpleName}: must be interface")
+                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${typeElement.qualifiedName}: Class must be an interface")
 
             val packageName = processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
             val originalClassName = ClassName.get(packageName, typeElement.simpleName.toString())
@@ -74,7 +74,7 @@ class BindingProcessor : AbstractProcessor() {
                 val baseType = returnType.typeArguments[0]
                 val toType = returnType.typeArguments[1]
                 if (toType.simpleName() != "String") {
-                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${executableElement.simpleName}: Return type must be ColumnAdapter<*, String>")
+                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${executableElement.simpleName}: Method's return type must be ColumnAdapter<*, String>")
                     return@enclosed
                 }
 

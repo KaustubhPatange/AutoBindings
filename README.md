@@ -16,13 +16,13 @@ Library currently supports
 ## Download
 
 ```groovy
-implementation 'io.github.kaustubhpatange:autobindings:tag'
+implementation 'io.github.kaustubhpatange:autobindings:<version>'
 
 // Kotlin
 apply plugin: 'kotlin-kapt' // at top of your module build.gradle file
-kapt 'io.github.kaustubhpatange:autobindings-compiler:tag'
+kapt 'io.github.kaustubhpatange:autobindings-compiler:<version>'
 // Java
-annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:tag'
+annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:<version>'
 ```
 
 ## Resources

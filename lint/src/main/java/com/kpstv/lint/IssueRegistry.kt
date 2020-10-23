@@ -26,6 +26,8 @@ class IssueRegistry : IssueRegistry() {
             RecyclerViewDetector.ISSUE_NO_DIFFCONTENTSAME,
             RecyclerViewDetector.ISSUE_INCORRECT_ITEMVIEWTYPE,
             TypeConvertDetector.ISSUE_NO_SERIALIZABLE,
-            TypeConvertDetector.ISSUE_NO_JSONCLASS
+            TypeConvertDetector.ISSUE_NO_JSONCLASS,
+            TypeConvertDetector.ISSUE_NO_INTERFACE,
+            TypeConvertDetector.ISSUE_WRONG_RETURN_TYPE
         )
 }

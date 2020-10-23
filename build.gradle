@@ -3,7 +3,7 @@ apply plugin: 'io.codearte.nexus-staging'
 buildscript {
     ext.kotlin_version = "1.4.10"
     ext.versions = [
-            'library': "1.1-alpha14"
+            'library': "1.1-alpha15"
     ]
     repositories {
         google()

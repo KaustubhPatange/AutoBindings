@@ -3,9 +3,13 @@ package com.kpstv.lint.detectors
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiAnnotation
+import com.kpstv.bindings.AutoGenerateConverter
 import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.bindings.AutoGenerateSQLDelightAdapters
 import com.kpstv.lint.Utils
 import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UMethod
+import org.jetbrains.uast.toUElement
 import org.jetbrains.uast.visitor.AbstractUastVisitor
 
 class TypeConvertDetector : Detector(), Detector.UastScanner {
@@ -42,7 +46,33 @@ class TypeConvertDetector : Detector(), Detector.UastScanner {
                 }
                 commonSerializationReport(node, converterAnnotation)
             }
+            if (node.hasAnnotation(ANNOTATION_COLUMN_ADAPTER)) {
+                if (!node.isInterface)
+                    context.report(
+                        issue = ISSUE_NO_INTERFACE,
+                        scopeClass = node,
+                        location = context.getLocation(node.navigationElement),
+                        message = MSG_NO_INTERFACE
+                    )
+            }
             return super.visitClass(node)
+        }
+
+        override fun visitMethod(node: UMethod): Boolean {
+            val parentNode = node.parent.toUElement()
+            if (parentNode is UClass && parentNode.hasAnnotation(ANNOTATION_COLUMN_ADAPTER)) {
+                val split = INVALID_RETURN_TYPE_MATCHER.toRegex()
+                    .matchEntire(node.returnType?.canonicalText ?: "")
+                    ?.groups?.get(2)
+                    ?.value?.split(",")
+                if (split?.last()?.trim() != CLASS_STRING)
+                    context.report(
+                        issue = ISSUE_WRONG_RETURN_TYPE,
+                        location = context.getLocation(node),
+                        message = MSG_INVALID_RETURN_TYPE
+                    )
+            }
+            return super.visitMethod(node)
         }
 
         private fun reportNoJsonClass(node: UClass, converterAnnotation: PsiAnnotation?) {
@@ -91,10 +121,19 @@ class TypeConvertDetector : Detector(), Detector.UastScanner {
     }
 
     companion object {
-        const val ANNOTATION_CONVERTER = "com.kpstv.bindings.AutoGenerateConverter"
-        const val ANNOTATION_LIST_CONVERTER = "com.kpstv.bindings.AutoGenerateListConverter"
+        private const val ANNOTATION_CONVERTER = "com.kpstv.bindings.AutoGenerateConverter"
+        private const val ANNOTATION_LIST_CONVERTER = "com.kpstv.bindings.AutoGenerateListConverter"
+        private const val ANNOTATION_COLUMN_ADAPTER = "com.kpstv.bindings.AutoGenerateSQLDelightAdapters"
         const val ANNOTATION_SERIALIZABLE = "kotlinx.serialization.Serializable"
         const val ANNOTATION_JSONCLASS = "com.squareup.moshi.JsonClass"
+
+        const val CLASS_STRING = "java.lang.String"
+        const val INVALID_RETURN_TYPE_MATCHER =
+            "com\\.squareup\\.sqldelight\\.ColumnAdapter(\\s+)?<(.*)>"
+
+        private const val MSG_NO_INTERFACE = "Class must be an interface"
+        private const val MSG_INVALID_RETURN_TYPE =
+            "Return type of function must be of type ColumnAdapter<*, String>"
 
         private val IMPLEMENTATION = Implementation(
             TypeConvertDetector::class.java,
@@ -125,6 +164,32 @@ class TypeConvertDetector : Detector(), Detector.UastScanner {
                 category = Category.CORRECTNESS,
                 priority = 9,
                 severity = Severity.WARNING,
+                androidSpecific = true,
+                implementation = IMPLEMENTATION
+            )
+        val ISSUE_NO_INTERFACE: Issue = Issue
+            .create(
+                id = "delightNoInterface",
+                briefDescription = MSG_NO_INTERFACE,
+                explanation = """
+                This is needed otherwise the program will create runtime exceptions.
+            """.trimIndent(),
+                category = Category.CORRECTNESS,
+                priority = 10,
+                severity = Severity.ERROR,
+                androidSpecific = true,
+                implementation = IMPLEMENTATION
+            )
+        val ISSUE_WRONG_RETURN_TYPE: Issue = Issue
+            .create(
+                id = "delightWrongReturnType",
+                briefDescription = MSG_INVALID_RETURN_TYPE,
+                explanation = """
+                This is needed otherwise the program will create runtime exceptions.
+            """.trimIndent(),
+                category = Category.CORRECTNESS,
+                priority = 10,
+                severity = Severity.ERROR,
                 androidSpecific = true,
                 implementation = IMPLEMENTATION
             )
