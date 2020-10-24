@@ -29,6 +29,7 @@ annotationProcessor 'io.github.kaustubhpatange:autobindings-compiler:<version>'
 
 - **Medium article(s)**
   - [Auto-Generate TypeConverters for entity classes: Room](https://medium.com/@developerkp16/auto-generate-typeconverters-for-entity-classes-room-1b40a793c146)
+  - [“Custom column types” in SQLDelight: Android](https://developerkp16.medium.com/custom-column-types-in-sqldelight-android-a6f166635464)
 
 ## License
 
