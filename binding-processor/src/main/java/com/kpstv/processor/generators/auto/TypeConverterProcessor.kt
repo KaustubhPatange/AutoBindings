@@ -12,8 +12,9 @@ class TypeConverterProcessor(
     override val typeSpecBuilder: TypeSpec.Builder,
     override val serializerType: ConverterType,
     private val firstClassType: ClassName,
+    private val enumList: List<TypeName>,
     generatorDataType: AutoGeneratorDataType,
-    secondClassType: TypeName? = null
+    secondClassType: TypeName? = null,
 ) : BaseAutoGenerator() {
 
     override val converterType = AutoGeneratorType.ROOM
@@ -39,5 +40,12 @@ class TypeConverterProcessor(
             .addAnnotation(Consts.CLASSNAME_TYPECONVERTER)
             .addParameter(String::class.java, Consts.converterName)
             .returns(baseDataType)
+    }
+
+    override fun create() {
+        super.create()
+        for(enum in enumList) {
+            EnumGenericConverter.generate(typeSpecBuilder, enum)
+        }
     }
 }

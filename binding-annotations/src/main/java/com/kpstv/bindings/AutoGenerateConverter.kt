@@ -41,6 +41,15 @@ annotation class AutoGenerateMapConverter(val keyClass: KClass<*>, val using: Co
 annotation class AutoGeneratePairConverter(val keyClass: KClass<*>, val using: ConverterType)
 
 /**
+ * If marked to field like Enum, the processor will not generate the converter for that element.
+ *
+ * @see <a href="https://github.com/KaustubhPatange/AutoBindings/wiki/TypeConverter-Generation">Documentation</a>
+ */
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.SOURCE)
+annotation class IgnoreConverter
+
+/**
  * Automatically generate [SQLDelightAdapter] for SQLDelight.
  *
  * @see <a href="https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation">Documentation</a>

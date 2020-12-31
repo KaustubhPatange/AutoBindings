@@ -10,6 +10,9 @@ import java.nio.file.FileAlreadyExistsException
 import javax.annotation.processing.FilerException
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.DeclaredType
+import javax.lang.model.type.TypeMirror
+import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 import javax.tools.JavaFileManager
 import javax.tools.StandardLocation
@@ -69,19 +72,23 @@ object Utils {
         }
     }
 
-    fun getAppropriateDelightSuffix(dataType: AutoGeneratorDataType): String {
-        return when(dataType) {
-            AutoGeneratorDataType.DATA -> Consts.adapterSuffix
-            AutoGeneratorDataType.LIST -> Consts.adapterListSuffix
-            AutoGeneratorDataType.MAP -> Consts.adapterMapSuffix
-            AutoGeneratorDataType.PAIR -> Consts.adapterPairSuffix
-        }
-    }
-
     fun prepareJavaModelName(data: String): String {
         return if (data.contains("\\.")) {
             data.split(".").joinToString { getJavaModelName(it) }
         } else getJavaModelName(data)
+    }
+
+    fun isEnum(type: TypeMirror?, types: Types): Boolean {
+        for (directSupertype in types.directSupertypes(type)) {
+            val element = (directSupertype as DeclaredType).asElement() as TypeElement
+            if (element.qualifiedName.contentEquals("java.lang.Enum")) {
+                return true
+            }
+            if (isEnum(directSupertype, types)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun getJavaModelName(item: String) =

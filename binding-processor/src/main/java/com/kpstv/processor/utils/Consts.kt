@@ -9,6 +9,7 @@ object Consts {
     const val converterListSuffix = "ListConverter"
     const val converterMapSuffix = "MapConverter"
     const val converterPairSuffix = "PairConverter"
+    const val converterEnumSuffix = "EnumConverter"
 
     const val adapterSuffix = "Adapter"
     const val adapterListSuffix = "ListAdapter"

@@ -20,7 +20,7 @@ abstract class BaseAutoGenerator {
 
     protected abstract fun decodeBuilder(): MethodSpec.Builder
 
-    fun create() {
+    open fun create() {
         val toMethodCode = CodeBlock.builder()
             .addStatement("if (${Consts.converterName} == null) return null")
 

@@ -9,9 +9,7 @@ import com.squareup.javapoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.ExecutableElement
-import javax.lang.model.element.Modifier
-import javax.lang.model.element.TypeElement
+import javax.lang.model.element.*
 import javax.lang.model.util.ElementFilter
 import javax.tools.Diagnostic
 
@@ -51,17 +49,22 @@ class BindingProcessor : AbstractProcessor() {
         elements.forEach { typeElement ->
 
             if (!typeElement.modifiers.contains(Modifier.ABSTRACT))
-                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${typeElement.qualifiedName}: Class must be an interface")
+                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR,
+                    "${typeElement.qualifiedName}: Class must be an interface")
 
             val packageName = processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
-            val originalClassName = ClassName.get(packageName, typeElement.simpleName.toString())
-            val generatedClassName = ClassName.get(packageName, typeElement.simpleName.toString() + "Impl")
+            val originalClassName = ClassName.get(typeElement)
+            val generatedClassName = ClassName.get(packageName,
+                typeElement.simpleName.toString() + "Impl")
 
             val adapterBuilder = TypeSpec.classBuilder(generatedClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(originalClassName)
                 .addField(
-                    FieldSpec.builder(generatedClassName, "Instance", Modifier.PRIVATE, Modifier.STATIC)
+                    FieldSpec.builder(generatedClassName,
+                        "Instance",
+                        Modifier.PRIVATE,
+                        Modifier.STATIC)
                         .initializer("new \$T()", generatedClassName).build()
                 )
 
@@ -74,7 +77,8 @@ class BindingProcessor : AbstractProcessor() {
                 val baseType = returnType.typeArguments[0]
                 val toType = returnType.typeArguments[1]
                 if (toType.simpleName() != "String") {
-                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "${executableElement.simpleName}: Method's return type must be ColumnAdapter<*, String>")
+                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR,
+                        "${executableElement.simpleName}: Method's return type must be ColumnAdapter<*, String>")
                     return@enclosed
                 }
 
@@ -86,7 +90,10 @@ class BindingProcessor : AbstractProcessor() {
                     ).generateMethod()
                 )
                 adapterBuilder.addField(
-                    FieldSpec.builder(returnType, enclosedElement.simpleName.toString(), Modifier.PUBLIC, Modifier.STATIC)
+                    FieldSpec.builder(returnType,
+                        enclosedElement.simpleName.toString(),
+                        Modifier.PUBLIC,
+                        Modifier.STATIC)
                         .initializer("Instance.${enclosedElement.simpleName}()")
                         .build()
                 )
@@ -157,8 +164,17 @@ class BindingProcessor : AbstractProcessor() {
         val packageName =
             processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
 
+        val enumList = ArrayList<TypeName>()
+        for(ele in typeElement.enclosedElements) {
+            if (ele.kind == ElementKind.FIELD && Utils.isEnum(ele.asType(), processingEnv.typeUtils)) {
+                // Only generate converter when this annotation is not present
+                if(ele.getAnnotation(IgnoreConverter::class.java) == null)
+                    enumList.add(ClassName.get(ele.asType()))
+            }
+        }
+
         val typeName = typeElement.simpleName.toString()
-        val originalClassName = ClassName.get(packageName, typeName)
+        val originalClassName = ClassName.get(typeElement)
 
         val generatedClassName =
             ClassName.get(packageName, typeName + Utils.getAppropriateSuffix(generatorDataType))
@@ -168,6 +184,7 @@ class BindingProcessor : AbstractProcessor() {
             .also {
                 TypeConverterProcessor(
                     typeSpecBuilder = it,
+                    enumList = enumList,
                     serializerType = using,
                     generatorDataType = generatorDataType,
                     firstClassType = originalClassName,

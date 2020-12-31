@@ -1,5 +1,6 @@
 package com.kpstv.sample_ktx.data
 
+import com.kpstv.bindings.AutoGenerateConverter
 import com.kpstv.bindings.AutoGeneratePairConverter
 import com.kpstv.bindings.ConverterType
 import com.kpstv.samplektx.data.DataDomain
@@ -26,3 +27,10 @@ fun Data.mapToDomain(): DataDomain {
 fun List<Data>.mapToDomain(): List<DataDomain> {
     return map { it.mapToDomain() }
 }
+
+enum class Category {
+    FIRST, SECOND, THIRD
+}
+
+@AutoGenerateConverter(using = ConverterType.GSON)
+data class TestDataClass(val name: String, val category: Category)
