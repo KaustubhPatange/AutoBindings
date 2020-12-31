@@ -164,14 +164,10 @@ class BindingProcessor : AbstractProcessor() {
         val packageName =
             processingEnv.elementUtils.getPackageOf(typeElement).qualifiedName.toString()
 
-        val enumList = ArrayList<TypeName>()
-        for(ele in typeElement.enclosedElements) {
-            if (ele.kind == ElementKind.FIELD && Utils.isEnum(ele.asType(), processingEnv.typeUtils)) {
-                // Only generate converter when this annotation is not present
-                if(ele.getAnnotation(IgnoreConverter::class.java) == null)
-                    enumList.add(ClassName.get(ele.asType()))
-            }
-        }
+        val enumList= typeElement.enclosedElements
+            .filter { ele -> ele.kind == ElementKind.FIELD && Utils.isEnum(ele.asType(), processingEnv.typeUtils) }
+            .filter { ele -> ele.getAnnotation(IgnoreConverter::class.java) == null }
+            .map { ClassName.get(it.asType()) }
 
         val typeName = typeElement.simpleName.toString()
         val originalClassName = ClassName.get(typeElement)
