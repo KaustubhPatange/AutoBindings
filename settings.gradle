@@ -1,10 +1,6 @@
 include ':lint'
 include ':sample-ktx'
-include ':binding-library'
-include ':binding-annotations'
-include ':binding-processor'
+include ':autobindings'
+include ':autobindings-annotations'
+include ':autobindings-compiler'
 rootProject.name = "AutoBindings"
-
-project(":binding-library").name = "autobindings"
-project(":binding-annotations").name = "autobindings-annotations"
-project(":binding-processor").name = "autobindings-compiler"

@@ -11,9 +11,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/binding-annotations" />
-            <option value="$PROJECT_DIR$/binding-library" />
-            <option value="$PROJECT_DIR$/binding-processor" />
+            <option value="$PROJECT_DIR$/autobindings" />
+            <option value="$PROJECT_DIR$/autobindings-annotations" />
+            <option value="$PROJECT_DIR$/autobindings-compiler" />
             <option value="$PROJECT_DIR$/lint" />
             <option value="$PROJECT_DIR$/sample-ktx" />
           </set>

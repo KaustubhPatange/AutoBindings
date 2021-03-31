@@ -1,16 +1,16 @@
 apply plugin: 'io.codearte.nexus-staging'
 
 buildscript {
-    ext.kotlin_version = "1.4.10"
+    ext.kotlin_version = "1.4.31"
     ext.versions = [
-            'library': "1.1-alpha16" // TODO: Increment version for every new release.
+            'library': "1.1-beta02" // TODO: Increment version for every new release & run the task at bottom to publish it
     ]
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.0.1"
+        classpath "com.android.tools.build:gradle:4.1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.0"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
@@ -20,12 +20,20 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         google()
         jcenter()
-        mavenLocal()
+        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// TODO: Run this task to publish library on maven & then normally close & release it.
+tasks.register("publishAllLibrariesToMavenCentral") {
+    dependsOn 'autobindings-annotations:uploadArchives'
+    dependsOn 'autobindings-compiler:uploadArchives'
+    dependsOn 'autobindings:publishReleasePublicationToSonatypeRepository'
 }

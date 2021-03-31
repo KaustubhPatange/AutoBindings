@@ -77,5 +77,9 @@ dependencies {
     implementation project (":autobindings")
     kapt project (":autobindings-compiler")
 
+    //def auto_bindings = versions.library
+    //implementation project(":autobindings-annotations")
+    //kapt "io.github.kaustubhpatange:autobindings-compiler:$auto_bindings"
+
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 }

@@ -9,6 +9,7 @@
       <module name="AutoBindings.sample-ktx" target="1.8" />
       <module name="binding-annotations" target="1.7" />
       <module name="binding-processor" target="1.7" />
+      <module name="CustomAnnotations-ktx.AutoBindings.autobindings" target="1.8" />
       <module name="lint" target="1.7" />
       <module name="processor" target="1.7" />
     </bytecodeTargetLevel>
