@@ -27,6 +27,12 @@ class BindingProcessor : AbstractProcessor() {
         )
     }
 
+    override fun getSupportedOptions(): MutableSet<String> {
+        if (!Utils.disableIncrementalProcessing(processingEnv))
+            return mutableSetOf(Consts.ISOLATING_ANNOTATION_PROCESSORS_INDICATOR)
+        return super.getSupportedOptions()
+    }
+
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()
     }

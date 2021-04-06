@@ -1,6 +1,7 @@
 package com.kpstv.processor.utils
 
 import com.kpstv.bindings.ImageTransformationType
+import com.kpstv.processor.utils.Consts.AUTOBINDINGS_INCREMENTAL
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeSpec
 import java.io.File
@@ -89,6 +90,10 @@ object Utils {
             }
         }
         return false
+    }
+
+    fun disableIncrementalProcessing(processingEnv: ProcessingEnvironment): Boolean {
+        return !(processingEnv.options[AUTOBINDINGS_INCREMENTAL]?.toBoolean() ?: false)
     }
 
     private fun getJavaModelName(item: String) =

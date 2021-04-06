@@ -3,7 +3,7 @@ apply plugin: 'io.codearte.nexus-staging'
 buildscript {
     ext.kotlin_version = "1.4.31"
     ext.versions = [
-            'library': "1.1-beta02" // TODO: Increment version for every new release & run the task at bottom to publish it
+            'library': "1.1-beta03" // TODO: Increment version for every new release & run the task at bottom to publish it
     ]
     repositories {
         google()
@@ -31,9 +31,22 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-// TODO: Run this task to publish library on maven & then normally close & release it.
 tasks.register("publishAllLibrariesToMavenCentral") {
-    dependsOn 'autobindings-annotations:uploadArchives'
-    dependsOn 'autobindings-compiler:uploadArchives'
-    dependsOn 'autobindings:publishReleasePublicationToSonatypeRepository'
+    def t1 = tasks.getByPath("autobindings-annotations:uploadArchives")
+    def t2 = tasks.getByPath("autobindings-compiler:uploadArchives")
+    def t3 = tasks.getByPath("autobindings:publishReleasePublicationToSonatypeRepository")
+
+    def t4 = tasks.getByName("closeRepository")
+    def t5 = tasks.getByName("releaseRepository")
+
+    t2.mustRunAfter(t1)
+    t3.mustRunAfter(t2)
+    t4.mustRunAfter(t3)
+    t5.mustRunAfter(t4)
+
+    dependsOn(t1)
+    dependsOn(t2)
+    dependsOn(t3)
+    dependsOn(t4)
+    dependsOn(t5)
 }

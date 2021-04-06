@@ -3,6 +3,11 @@ package com.kpstv.processor.utils
 import com.squareup.javapoet.ClassName
 
 object Consts {
+    internal const val ISOLATING_ANNOTATION_PROCESSORS_INDICATOR =
+        "org.gradle.annotation.processing.isolating"
+
+    const val AUTOBINDINGS_INCREMENTAL = "autobindings.incremental"
+
     const val adapterPrefix = "Bind"
     const val holderSuffix = "Holder"
     const val converterSuffix = "Converter"
