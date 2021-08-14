@@ -30,6 +30,7 @@ class TypeConverterProcessor(
         return MethodSpec.methodBuilder(Consts.toConvertMethod + firstClassType.simpleName())
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addAnnotation(Consts.CLASSNAME_TYPECONVERTER)
+            .addAnnotation(Consts.CLASSNAME_NULLABLE)
             .addParameter(baseDataType, Consts.converterName)
             .returns(String::class.java)
     }
@@ -38,6 +39,7 @@ class TypeConverterProcessor(
         return MethodSpec.methodBuilder(Consts.fromConvertMethod + firstClassType.simpleName())
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addAnnotation(Consts.CLASSNAME_TYPECONVERTER)
+            .addAnnotation(Consts.CLASSNAME_NULLABLE)
             .addParameter(String::class.java, Consts.converterName)
             .returns(baseDataType)
     }

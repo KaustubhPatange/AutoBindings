@@ -90,6 +90,11 @@ object Consts {
         "TypeConverter"
     )
 
+    val CLASSNAME_NULLABLE = ClassName.get(
+        "org.jetbrains.annotations",
+        "Nullable"
+    )
+
     val CLASSNAME_GSON = ClassName.get(
         "com.google.gson",
         "Gson"
