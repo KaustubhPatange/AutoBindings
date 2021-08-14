@@ -13,7 +13,7 @@ Library currently supports
 - [Generation of `TypeConverters` for Room](https://github.com/KaustubhPatange/AutoBindings/wiki/TypeConverter-Generation)
 - [Generation of `ColumnAdapters` for custom types in SQLDelight](https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation)
 
-You can find some extra compiler options list [here](https://github.com/KaustubhPatange/AutoBindings/wiki/Compiler-Options).
+You can find some set of extra compiler options [here](https://github.com/KaustubhPatange/AutoBindings/wiki/Compiler-Options).
 
 ## Download
 

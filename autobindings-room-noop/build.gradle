@@ -1,7 +1,8 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'maven-publish'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion 30
@@ -23,16 +24,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    api project(":autobindings-annotations")
-    lintPublish project(":lint")
+    implementation 'androidx.core:core-ktx:1.6.0'
 }
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
-    PUBLISH_ARTIFACT_ID = 'autobindings'
+    PUBLISH_ARTIFACT_ID = 'autobindings-room-noop'
     PUBLISH_VERSION = versions.library
 }
 

@@ -8,7 +8,8 @@ import androidx.room.TypeConverters
     entities = [
         TestDataClass::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 @TypeConverters(
     com.kpstv.sample_ktx.data.TestDataClassConverter::class,

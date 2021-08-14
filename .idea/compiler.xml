@@ -6,10 +6,11 @@
       <module name="autobindings-annotations" target="1.7" />
       <module name="autobindings-compiler" target="1.7" />
       <module name="AutoBindings.autobindings" target="1.8" />
-      <module name="AutoBindings.sample-ktx" target="1.8" />
+      <module name="AutoBindings.autobindings-room-noop" target="11" />
+      <module name="AutoBindings.sample-ktx" target="11" />
       <module name="binding-annotations" target="1.7" />
       <module name="binding-processor" target="1.7" />
-      <module name="CustomAnnotations-ktx.AutoBindings.autobindings" target="1.8" />
+      <module name="CustomAnnotations-ktx.AutoBindings.autobindings" target="11" />
       <module name="lint" target="1.7" />
       <module name="processor" target="1.7" />
     </bytecodeTargetLevel>

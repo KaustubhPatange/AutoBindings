@@ -14,12 +14,12 @@
             <option value="$PROJECT_DIR$/autobindings" />
             <option value="$PROJECT_DIR$/autobindings-annotations" />
             <option value="$PROJECT_DIR$/autobindings-compiler" />
+            <option value="$PROJECT_DIR$/autobindings-room-noop" />
             <option value="$PROJECT_DIR$/lint" />
             <option value="$PROJECT_DIR$/sample-ktx" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
-        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -3,4 +3,5 @@ include ':sample-ktx'
 include ':autobindings'
 include ':autobindings-annotations'
 include ':autobindings-compiler'
+include ':autobindings-room-noop'
 rootProject.name = "AutoBindings"
