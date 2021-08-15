@@ -2,6 +2,7 @@ package com.kpstv.lint
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.kotlin
 import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
+import com.android.tools.lint.checks.infrastructure.TestMode
 import com.kpstv.lint.detectors.RecyclerViewDetector
 import com.kpstv.lint.utils.Stubs
 import org.junit.Test
@@ -19,7 +20,7 @@ class WrongRecyclerViewImplementationTests {
             }
         """
         ).indented()
-        lint().files(Stubs.RECYCLERVIEW_ANNOTATION, Stubs.ONBIND_ANNOTATION, stubFile)
+        lint().files(Stubs.RECYCLERVIEW_ANNOTATION, Stubs.LAYOUT_RES_ANNOTATION, Stubs.ONBIND_ANNOTATION, stubFile)
             .issues(RecyclerViewDetector.ISSUE_ON_BIND)
             .run()
             .expect(
@@ -28,7 +29,8 @@ class WrongRecyclerViewImplementationTests {
                 class TestAdapter {
                       ~~~~~~~~~~~
                 0 errors, 1 warnings
-            """.trimIndent()
+            """.trimIndent(),
+                testMode = TestMode.DEFAULT
             )
     }
 
@@ -79,6 +81,7 @@ class WrongRecyclerViewImplementationTests {
             stubFile
         )
             .issues(RecyclerViewDetector.ISSUE_INCORRECT_BIND)
+            .allowCompilationErrors()
             .run()
             .expect(
                 """

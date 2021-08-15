@@ -35,8 +35,9 @@ enum class Category {
     FIRST, SECOND, THIRD
 }
 
+//@Serializable
 @Entity(tableName = "table_testdata")
-@AutoGenerateConverter(using = ConverterType.GSON)
+@AutoGenerateConverter(using = ConverterType.KOTLIN_SERIALIZATION)
 data class TestDataClass(val name: String, val category: Category) {
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0

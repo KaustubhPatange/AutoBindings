@@ -30,9 +30,9 @@ class WrongAutogenerateConverterTests {
             .run()
             .expect(
                 """
-                src/com/kpstv/lint/User.kt:6: Warning: Class must be annotated with @Serializable. [kotlinSerialization]
-                data class User(val name: String)
-                           ~~~~
+                src/com/kpstv/lint/User.kt:5: Warning: Class must be annotated with @Serializable. [kotlinSerialization]
+                @AutoGenerateConverter(using = ConverterType.KOTLIN_SERIALIZATION)
+                ^
                 0 errors, 1 warnings
                 """.trimIndent()
             )
@@ -60,12 +60,12 @@ class WrongAutogenerateConverterTests {
             .issues(TypeConvertDetector.ISSUE_NO_JSONCLASS)
             .run()
             .expect(
-               """
-                src/com/kpstv/lint/User.kt:6: Warning: Class must be annotated with @JsonClass(generateAdapter = true) [noJsonClass]
-                data class User(val name: String)
-                           ~~~~
-                0 errors, 1 warnings
-               """.trimIndent()
+                """
+                   src/com/kpstv/lint/User.kt:5: Warning: Class must be annotated with @JsonClass(generateAdapter = true). [noJsonClass]
+                   @AutoGenerateListConverter(using = ConverterType.MOSHI)
+                   ^
+                   0 errors, 1 warnings
+                """.trimIndent()
             )
     }
 }

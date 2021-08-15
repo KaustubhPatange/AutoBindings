@@ -57,6 +57,7 @@ class CorrectRecyclerViewImplementationTests {
                 RecyclerViewDetector.ISSUE_INCORRECT_ONLONGCLICK,
                 RecyclerViewDetector.ISSUE_INCORRECT_ITEMVIEWTYPE
             )
+            .allowCompilationErrors()
             .run()
             .expect("No warnings.")
     }

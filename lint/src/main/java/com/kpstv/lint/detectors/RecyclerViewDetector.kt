@@ -137,7 +137,7 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
             }
 
             // Detect usage of OnBind method
-            if (!clazz.allMethods.any { it.hasAnnotation(ANNOTATION_ONBIND) }) {
+            if (clazz.allMethods.none { it.hasAnnotation(ANNOTATION_ONBIND) }) {
                 context.report(
                     issue = ISSUE_ON_BIND,
                     scopeClass = clazz,
@@ -222,14 +222,13 @@ class RecyclerViewDetector : Detector(), Detector.UastScanner {
                 .name(name)
                 .pattern("${Utils.getSimpleName(clazz.qualifiedName)}(.*)")
                 .with(codeFix)
-                .end()
                 .reformat(true)
                 .shortenNames()
                 .range(
                     context.getRangeLocation(
                         clazz.navigationElement,
                         0,
-                        clazz.asSourceString().length
+                        clazz.textLength
                     )
                 )
                 .build()

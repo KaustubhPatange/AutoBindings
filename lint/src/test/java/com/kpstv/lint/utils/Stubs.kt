@@ -24,6 +24,12 @@ object Stubs {
             annotation class RecyclerViewListAdapter(val dataSetType: KClass<*> = Any::class)
     """
     ).indented()
+    val LAYOUT_RES_ANNOTATION = kotlin(
+        """
+            package androidx.annotation
+            annotation class LayoutRes
+            """
+    )
     val ONBIND_ANNOTATION = kotlin(
         """
             package com.kpstv.bindings
@@ -98,7 +104,6 @@ object Stubs {
     val CLASS_CONTEXT = kotlin(
         """
             package android.content
-            
             class Context { }
         """
     ).indented()
@@ -128,14 +133,14 @@ object Stubs {
     )
 
     val CLASS_COLUMNADAPTER = kotlin(
-     """
+        """
         package com.squareup.sqldelight
         interface ColumnAdapter<T : Any, S>
      """
     ).indented()
 
     val CONVERTER_ANNOTATIONS = kotlin(
-     """
+        """
             package com.kpstv.bindings
             
             import com.kpstv.bindings.ConverterType
