@@ -33,10 +33,10 @@ task clean(type: Delete) {
 }
 
 tasks.register("publishAllLibrariesToMavenCentral") {
-    def t1 = tasks.getByPath("autobindings-annotations:uploadArchives")
-    def t2 = tasks.getByPath("autobindings-compiler:uploadArchives")
-    def t3 = tasks.getByPath("autobindings-room-noop:publishReleasePublicationToSonatypeRepository")
-    def t4 = tasks.getByPath("autobindings:publishReleasePublicationToSonatypeRepository")
+    def t1 = tasks.getByPath("autobindings-annotations:publish")
+    def t2 = tasks.getByPath("autobindings-compiler:publish")
+    def t3 = tasks.getByPath("autobindings-room-noop:publish")
+    def t4 = tasks.getByPath("autobindings:publish")
 
     def t5 = tasks.getByName("closeRepository")
     def t6 = tasks.getByName("releaseRepository")

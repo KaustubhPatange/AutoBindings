@@ -7,10 +7,10 @@ jobs:
     if: "contains(github.event.head_commit.message, '[Released]')"
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
       - name: Creating local properties file
         run: echo signing.keyId=${{ secrets.SIGNING_KEYID }} >> local.properties
       - run: echo signing.password=${{ secrets.SIGNING_PASSWORD }} >> local.properties
@@ -27,11 +27,13 @@ jobs:
       - run: type local.properties
       - run: chmod +x gradlew
       - name: Stage annotations
-        run: ./gradlew autobindings-annotations:uploadArchives
+        run: ./gradlew autobindings-annotations:publish
       - name: Stage compiler
-        run: ./gradlew autobindings-compiler:uploadArchives
+        run: ./gradlew autobindings-compiler:publish
+      - name: Stage Room-noop
+        run: ./gradlew autobindings-room-noop:publish
       - name: Stage library
-        run: ./gradlew autobindings:publishReleasePublicationToSonatypeRepository
+        run: ./gradlew autobindings:publish
       - name: Closing repository
         run: ./gradlew closeRepository
       - name: Release repository
