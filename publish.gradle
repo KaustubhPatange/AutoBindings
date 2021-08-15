@@ -1,6 +1,3 @@
-/*if (plugins.hasPlugin('org.gradle.api.plugins.JavaLibraryPlugin')) {
-    apply plugin: 'java-library'
-}*/
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
@@ -24,6 +21,16 @@ if (plugins.hasPlugin('com.android.library')) {
     task androidSourcesJar(type: Jar) {
         archiveClassifier.set('sources')
         from android.sourceSets.main.java.srcDirs
+    }
+} else {
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+    javadoc {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
     }
 }
 
@@ -50,10 +57,6 @@ if (secretPropsFile.exists()) {
     ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
 }
 
-signing {
-    sign publishing.publications
-}
-
 nexusStaging {
     packageGroup = PUBLISH_GROUP_ID
     stagingProfileId = 'c51d602c035a' // dummy example, replace with your own!
@@ -67,11 +70,11 @@ afterEvaluate { project ->
     publishing {
         publications {
             release(MavenPublication) {
-                if (plugins.hasPlugin('org.gradle.api.plugins.JavaLibraryPlugin')) {
-                    from components.java
-                } else if (plugins.hasPlugin('com.android.library')) {
+                if (plugins.hasPlugin('com.android.library')) {
                     from components.release
                     artifact androidSourcesJar
+                } else {
+                    from components.java
                 }
 
                 groupId = PUBLISH_GROUP_ID
@@ -125,5 +128,9 @@ afterEvaluate { project ->
                 }
             }
         }
+    }
+
+    signing {
+        sign publishing.publications.release
     }
 }

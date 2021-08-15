@@ -5,7 +5,7 @@ buildscript {
     ext.androidGradlePlugin = "7.0.0"
     ext.lintVersion = "30.0.0" // Lint version = 23.0.0 + androidGradlePlugin version
     ext.versions = [
-            'library': "1.1-beta03" // TODO: Increment version for every new release & run the task at bottom to publish it
+            'library': "1.1-beta04" // TODO: Increment version for every new release & run the task at bottom to publish it
     ]
     repositories {
         google()

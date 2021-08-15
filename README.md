@@ -12,6 +12,7 @@ Library currently supports
 - [Generation of RecyclerView adapters](https://github.com/KaustubhPatange/AutoBindings/wiki/Adapter-Generation)
 - [Generation of `TypeConverters` for Room](https://github.com/KaustubhPatange/AutoBindings/wiki/TypeConverter-Generation)
 - [Generation of `ColumnAdapters` for custom types in SQLDelight](https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation)
+- [Generic Use of `TypeConverters` for general purpose](https://github.com/KaustubhPatange/AutoBindings/wiki/Generic-use-of-TypeConverters)
 
 You can find some set of extra compiler options [here](https://github.com/KaustubhPatange/AutoBindings/wiki/Compiler-Options).
 
