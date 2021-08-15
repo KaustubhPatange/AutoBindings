@@ -15,3 +15,5 @@ jobs:
         run: ./gradlew autobindings:build
       - name: Build Compiler
         run: ./gradlew autobindings-compiler:build
+      - name: Run Tests
+        run: ./gradlew lint:test

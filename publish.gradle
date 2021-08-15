@@ -1,25 +1,30 @@
+/*if (plugins.hasPlugin('org.gradle.api.plugins.JavaLibraryPlugin')) {
+    apply plugin: 'java-library'
+}*/
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    android.libraryVariants.all { variant ->
-        if (variant.name == 'release') {
-            owner.classpath += variant.javaCompileProvider.get().classpath
+if (plugins.hasPlugin('com.android.library')) {
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        android.libraryVariants.all { variant ->
+            if (variant.name == 'release') {
+                owner.classpath += variant.javaCompileProvider.get().classpath
+            }
         }
+        exclude '**/R.html', '**/R.*.html', '**/index.html'
     }
-    exclude '**/R.html', '**/R.*.html', '**/index.html'
-}
 
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    archiveClassifier.set('javadoc')
-    from androidJavadocs.destinationDir
-}
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        archiveClassifier.set('javadoc')
+        from androidJavadocs.destinationDir
+    }
 
-task androidSourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
+    task androidSourcesJar(type: Jar) {
+        archiveClassifier.set('sources')
+        from android.sourceSets.main.java.srcDirs
+    }
 }
 
 ext["signing.keyId"] = ''
@@ -56,12 +61,18 @@ nexusStaging {
     password = ossrhPassword
 }
 
-afterEvaluate {
+afterEvaluate { project ->
+    def plugins = project.getPlugins()
+
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
-                artifact androidSourcesJar
+                if (plugins.hasPlugin('org.gradle.api.plugins.JavaLibraryPlugin')) {
+                    from components.java
+                } else if (plugins.hasPlugin('com.android.library')) {
+                    from components.release
+                    artifact androidSourcesJar
+                }
 
                 groupId = PUBLISH_GROUP_ID
                 artifactId = PUBLISH_ARTIFACT_ID

@@ -33,4 +33,4 @@ ext {
     PUBLISH_VERSION = versions.library
 }
 
-apply from: "${rootProject.projectDir}/publish-aar.gradle"
+apply from: "${rootProject.projectDir}/publish.gradle"

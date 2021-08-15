@@ -18,4 +18,4 @@ ext {
     PUBLISH_VERSION = versions.library
 }
 
-apply from: rootProject.file('publish-jar.gradle')
+apply from: rootProject.file('publish.gradle')
