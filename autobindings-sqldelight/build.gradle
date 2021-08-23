@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 30
+
+    buildFeatures.buildConfig false
+    defaultConfig {
+        minSdkVersion 16
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    api project(":autobindings-annotations-sqldelight")
+    lintPublish project(":lint")
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
+    PUBLISH_ARTIFACT_ID = 'autobindings-sqldelight'
+    PUBLISH_VERSION = versions.library
+}
+
+apply from: "${rootProject.projectDir}/publish.gradle"

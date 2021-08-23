@@ -1,0 +1,21 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+   // implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    api project(":autobindings-annotations-converter-core")
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
+    PUBLISH_ARTIFACT_ID = 'autobindings-annotations-sqldelight'
+    PUBLISH_VERSION = versions.library
+}
+
+apply from: rootProject.file('publish.gradle')

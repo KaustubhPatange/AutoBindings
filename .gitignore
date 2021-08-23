@@ -15,3 +15,4 @@
 .cxx
 /key.asc
 *.gpg
+lint-report.html

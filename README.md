@@ -12,14 +12,18 @@ Library currently supports
 - [Generation of RecyclerView adapters](https://github.com/KaustubhPatange/AutoBindings/wiki/Adapter-Generation)
 - [Generation of `TypeConverters` for Room](https://github.com/KaustubhPatange/AutoBindings/wiki/TypeConverter-Generation)
 - [Generation of `ColumnAdapters` for custom types in SQLDelight](https://github.com/KaustubhPatange/AutoBindings/wiki/ColumnAdapter-Generation)
-- [Generic Use of `TypeConverters` for general purpose](https://github.com/KaustubhPatange/AutoBindings/wiki/Generic-use-of-TypeConverters)
+- [Use of `TypeConverters` for general purpose](https://github.com/KaustubhPatange/AutoBindings/wiki/Generic-use-of-TypeConverters)
 
 You can find some set of extra compiler options [here](https://github.com/KaustubhPatange/AutoBindings/wiki/Compiler-Options).
 
 ## Download
 
 ```groovy
-implementation 'io.github.kaustubhpatange:autobindings:<version>'
+implementation 'io.github.kaustubhpatange:autobindings-recyclerview:<version>' // For Recyclerview bindings
+implementation 'io.github.kaustubhpatange:autobindings-room:<version>' // For Room bindings
+implementation 'io.github.kaustubhpatange:autobindings-sqldelight:<version>' // For SQLDelight bindings
+
+implementation "io.github.kaustubhpatange:autobindings-room-noop:<version>" // For general use of typeconverters if you don't depend on Room
 
 // Kotlin
 apply plugin: 'kotlin-kapt' // at top of your module build.gradle file

@@ -1,0 +1,25 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.squareup:javapoet:1.12.1'
+
+    implementation project(":autobindings-annotations-recyclerview")
+    implementation project(":autobindings-annotations-room")
+    implementation project(":autobindings-annotations-sqldelight")
+    
+    compileOnly 'com.google.android.material:material:1.2.0-beta01'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.kaustubhpatange'
+    PUBLISH_ARTIFACT_ID = 'autobindings-compiler'
+    PUBLISH_VERSION = versions.library
+}
+
+apply from: rootProject.file('publish.gradle')

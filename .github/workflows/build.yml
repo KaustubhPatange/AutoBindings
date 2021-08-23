@@ -11,9 +11,5 @@ jobs:
           java-version: 11
       - run: chmod +x gradlew
       - run: chmod -R 777 ./
-      - name: Build Library
-        run: ./gradlew autobindings:build
-      - name: Build Compiler
-        run: ./gradlew autobindings-compiler:build
-      - name: Run Tests
-        run: ./gradlew lint:test
+      # Build project & run tests
+      - run: ./gradlew build

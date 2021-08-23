@@ -74,8 +74,10 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
 
     // AutoBindings
-    implementation project (":autobindings")
-    kapt project (":autobindings-compiler")
+    implementation project (":autobindings-recyclerview")
+    implementation project (":autobindings-room")
+    implementation project (":autobindings-sqldelight")
+    kapt project (':compiler')
 
     //def auto_bindings = versions.library
     //implementation project(":autobindings-annotations")

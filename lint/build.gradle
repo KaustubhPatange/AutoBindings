@@ -13,7 +13,10 @@ lintOptions {
 
 dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compileOnly project(":autobindings-annotations")
+
+    compileOnly project(":autobindings-annotations-recyclerview")
+    compileOnly project(":autobindings-annotations-room")
+    compileOnly project(":autobindings-annotations-sqldelight")
 
     compileOnly "com.android.tools.lint:lint-api:$lintVersion"
     compileOnly "com.android.tools.lint:lint-checks:$lintVersion"
