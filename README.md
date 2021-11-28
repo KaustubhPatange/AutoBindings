@@ -1,7 +1,7 @@
 # AutoBindings
 
 ![build](https://github.com/KaustubhPatange/AutoBindings/workflows/build/badge.svg)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.kaustubhpatange/autobindings)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.kaustubhpatange/autobindings-compiler)
 
 **AutoBindings** is a set of annotations which will make Android development easier by eliminating boilerplate codes.
 
