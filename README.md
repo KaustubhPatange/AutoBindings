@@ -3,6 +3,10 @@
 ![build](https://github.com/KaustubhPatange/AutoBindings/workflows/build/badge.svg)
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.kaustubhpatange/autobindings-compiler)
 
+### This project is _Discontinued_ as such logic for creating `RecyclerView` adapters, `TypeConverter`s for Room or SQLDelight can easily be abstracted into an abstract class. No need to use code generation.
+
+___
+
 **AutoBindings** is a set of annotations which will make Android development easier by eliminating boilerplate codes.
 
 ## Usage
